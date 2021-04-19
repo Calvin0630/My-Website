@@ -1,0 +1,14 @@
+source: https://www.sitepoint.com/build-a-simple-web-server-with-node-js/
+npm commands
+    npm init. Initializes a Node.js application and creates a package.json file
+    npm install <package>. Installs a Node.js package.
+    npm publish. Saves and uploads a package you built to the npm package community.
+    npm start. Runs your Node.js application (provided the package.json file is set up to use this command). 
+    npm stop. will quit the running application.
+
+web gl stuff
+
+
+git push command: git push -u origin main
+
+ffmpeg -i visuals_01.mp4 -ss 00:00:00 -t 00:00:32 -async 1 -strict -2 visuals_01_short.mp4
