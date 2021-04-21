@@ -1,6 +1,4 @@
-* {
-    box-sizing: border-box
-}
+
 
 /* Slideshow container */
 
@@ -18,14 +16,15 @@
 
 /* Next & previous buttons */
 
-.prev, .next {
+.prev, .next{
     cursor: pointer;
     position: absolute;
     top: 50%;
     width: auto;
     margin-top: -22px;
     padding: 16px;
-    color: white;
+    color: rgb(129, 129, 129);
+    background-color: rgba(71, 71, 71, 0.8);
     font-weight: bold;
     font-size: 18px;
     transition: 0.6s ease;
@@ -47,7 +46,7 @@
 /* On hover, add a black background color with a little bit see-through */
 
 .prev:hover, .next:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 
@@ -87,7 +86,8 @@
     border-radius: 50%;
     display: inline-block;
     transition: background-color 0.6s ease;
-    color: transparent;
+    color: rgb(200,200,200);
+    user-select: none;
 }
 
 .active, .dot:hover {

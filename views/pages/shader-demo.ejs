@@ -1,13 +1,19 @@
-<%- include ("../partials/sidebar"); %>
+<%- include ("../partials/head"); %>
+    <div class="view-container">
+        <%- include ("../partials/sidebar"); %>
 
-    <%- include ("../partials/header"); %>
-        <div class="content">
-            <h1>Shader UWU</h1>
-            <canvas id="canvas"></canvas>
-            <script src="/webgl/webgl-utils.js"></script>
-            <script src="/webgl/main.js"></script>
-        </div>
+            <div class="right-panel">
+
+                <%- include ("../partials/header"); %>
+
+                    <div class='content-container'>
+                        <h1>Shader UWU</h1>
+                        <canvas id="canvas"></canvas>
+                        <script src="/js/webgl/webgl-utils.js"></script>
+                        <script src="/js/webgl/main.js"></script>
+                    </div>>
+            </div>
+    </div>
 
 
-
-        <%- include ("../partials/footer"); %>
+    <%- include ("../partials/footer"); %>

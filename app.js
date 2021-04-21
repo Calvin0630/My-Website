@@ -18,19 +18,14 @@ app.get('/', function(req, res) {
     res.render('pages/index');
 });
 
-// about page
-app.get('/about', function(req, res) {
-    res.render('pages/about');
+// audiobook page
+app.get('/audiobooks', function(req, res) {
+    res.render('pages/leftist-audiobooks');
 });
 
 // shader demo
 app.get('/shader-demo', function(req, res) {
     res.render('pages/shader-demo');
-});
-
-// moon
-app.get('/moon', function(req, res) {
-    res.render('pages/moon');
 });
 
 
