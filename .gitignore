@@ -116,4 +116,4 @@ dist
 .pnp.*
 
 # because file sizes are too large
-/public/audiobooks
+/public/audiobooks/*
