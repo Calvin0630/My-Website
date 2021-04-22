@@ -1,4 +1,3 @@
-console.log("hello");
 var buttons = document.getElementsByClassName("sidebar-button");
 let activeButton = sessionStorage.getItem('active-sidebar-btn');
 if (activeButton==null || activeButton=='null') {
@@ -9,14 +8,14 @@ if (activeButton==null || activeButton=='null') {
     console.log("no active button set. assigning the home button.");
 }
 setButtonColor(activeButton);
-console.log("activeButton: "+activeButton);
+//console.log("activeButton: "+activeButton);
 for (i = 0; i < buttons.length; i++) {
-    console.log(buttons[i].textContent);
+    //console.log(buttons[i].textContent);
 }
 
 /*Sets the color of the given button by index, j (0=top)*/
 function setButtonColor(j) {
-    console.log("setActiveBtnColor("+j+")");
+    //console.log("setActiveBtnColor("+j+")");
     var i;
     for (i = 0; i < buttons.length; i++) {
         if (j == i) {
