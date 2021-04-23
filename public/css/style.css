@@ -112,8 +112,9 @@ canvas {
     padding-bottom: 2%;
     padding-left: 2%;
     text-decoration: none;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    display: inline-block;
 }
 
 video {
@@ -141,4 +142,8 @@ video {
     -ms-user-select: none;
     /* IE 10+ */
     user-select: none;
+}
+
+.webgl {
+    
 }
