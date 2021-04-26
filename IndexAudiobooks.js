@@ -8,16 +8,26 @@ module.exports = {
     bar: function () {
         // whatever
     },
-    bookList:[],
+    bookList: [],
     readAudiobookFiles: async function () {
         console.log("it works");
-        let files = fs.readdirSync(__dirname + '/public/audiobooks/');
+        //let files = fs.readdirSync(__dirname + '/public/audiobooks/');
+        try {
+            var files = fs.readdirSync(__dirname + '/public/audiobooks/');
+        } catch (e) {
+            console.log(e);
+        }
         //var bookList = [];
         for (f in files) {
             //ignore the index file
             if (files[f] == "index.json") continue;
             info = files[f].split(" - ");
             var chapters = fs.readdirSync(__dirname + '/public/audiobooks/' + files[f] + "/");
+            try {
+                var chapters = fs.readdirSync(__dirname + '/public/audiobooks/' + files[f] + "/");
+            } catch (e) {
+                console.log(e);
+            }
             //console.log("info: "+info[0]+", "+info[1]);
             //console.log("files[f]: "+files[f]);
             //console.log("chapters: "+chapters);
@@ -29,7 +39,7 @@ module.exports = {
         fs.writeFileSync(__dirname + '/public/audiobooks/index.json', JSON.stringify(this.bookList));
     }
 };
-function Book (title, author, location, chapters) {
+function Book(title, author, location, chapters) {
     //(string) the name of the book
     this.title = title;
     //(string) take a guess
