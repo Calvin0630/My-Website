@@ -1,7 +1,8 @@
 
 var express = require("express");
 var path = require("path");
-var fs = require("fs");
+const IndexAudiobooks = require("./IndexAudiobooks");
+var indexAudiobook = require("./IndexAudiobooks");
 
 
 app = express();
@@ -11,22 +12,25 @@ app.set('view engine', 'ejs');
 // Include partials middleware into the server
 app.use(express.static(__dirname + '/public'));
 
-readAudiobookFiles()
+//read the contents of ./public/audiobooks/ and the store the book info in a json to be read in html
+indexAudiobook.readAudiobookFiles();
 
 // use res.render to load up an ejs view file
 
 // index page
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.render('pages/index');
 });
 
 // audiobook page
-app.get('/audiobooks', function(req, res) {
-    res.render('pages/leftist-audiobooks');
+app.get('/audiobooks', function (req, res) {
+    res.render('pages/leftist-audiobooks', {
+        bookList: IndexAudiobooks.bookList
+    });
 });
 
 // shader demo
-app.get('/shader-demo', function(req, res) {
+app.get('/shader-demo', function (req, res) {
     res.render('pages/shader-demo');
 });
 
@@ -34,29 +38,3 @@ app.get('/shader-demo', function(req, res) {
 app.listen(app.get("port"), function () {
     console.log("server started on port: " + app.get("port"));
 });
-
-function readAudiobookFiles() {
-
-    let files = fs.readdirSync(__dirname +'/public/audiobooks/');
-    let mp3Regex = /([a-zA-Z0-9\s_\\.\-\(\):])+(.mp3)$/;
-    for (f in files) {
-        //if its an mp3
-        if (mp3Regex.test(files[f])) {
-            console.log("mp3: "+ files[f]);
-        }
-        //otherwise assume its a directory
-        else {
-            console.log("folder: "+ files[f]);
-        }
-    }
-    console.log("full list");
-    console.log(files);
-}
-
-function Book() {
-    this.title;
-    this.filename
-    this.author;
-    this.directory;
-    this.oneFile
-}

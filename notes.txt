@@ -11,4 +11,4 @@ web gl stuff
 
 git push command: git push -u origin main
 
-ffmpeg -i visuals_01.mp4 -ss 00:00:00 -t 00:00:32 -async 1 -strict -2 visuals_01_short.mp4
+public ip: http://198.84.184.253:80
