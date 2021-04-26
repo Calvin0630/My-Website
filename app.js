@@ -1,7 +1,6 @@
 
 var express = require("express");
 var path = require("path");
-const IndexAudiobooks = require("./IndexAudiobooks");
 var indexAudiobook = require("./IndexAudiobooks");
 
 
@@ -25,7 +24,7 @@ app.get('/', function (req, res) {
 // audiobook page
 app.get('/audiobooks', function (req, res) {
     res.render('pages/leftist-audiobooks', {
-        bookList: IndexAudiobooks.bookList
+        bookList: indexAudiobook.bookList
     });
 });
 
