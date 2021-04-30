@@ -1,0 +1,35 @@
+<%- include ("../partials/head"); %>
+<div class="view-container">
+    <%- include ("../partials/sidebar"); %>
+
+    <div class="right-panel">
+        <%- include ("../partials/header"); %>
+        <div class="content-container">
+            <% bookList.forEach(function(book) { %>
+            <% if(book.location==location){ %>
+            <div class="chapter-list-container">
+                <a href="/audiobooks">
+                    <img src="/images/ui/back.png" class ="back-button">
+                </a> 
+                <br>
+                <h1><%= book.title %></h1>
+                <h3>by</h3>
+                <h2><%= book.author %></h2>
+                <% book.chapters.forEach(function(chapter, i) { %>
+                <div class="chapter-container">
+                    <h2>Part: <%= (i+1) %></h2>
+                    <%chapterSource = "/audiobooks/"+location+"/"+chapter %>
+                    <audio controls>
+                        <source src="<%= chapterSource %>"
+                            type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <% }); %>
+            </div>
+            <% } %>
+            <% }); %>
+        </div>
+    </div>
+
+    <%- include ("../partials/footer"); %>

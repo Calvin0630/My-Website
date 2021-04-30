@@ -23,7 +23,14 @@ app.get('/', function (req, res) {
 
 // audiobook page
 app.get('/audiobooks', function (req, res) {
-    res.render('pages/leftist-audiobooks', {
+    res.render('pages/browse-audiobooks', {
+        bookList: indexAudiobook.bookList
+    });
+});
+
+app.get('/listen-to-audiobook', function (req, res) {
+    res.render('pages/listen-to-audiobook', {
+        location: req.query["book-loc"],
         bookList: indexAudiobook.bookList
     });
 });
