@@ -6,7 +6,7 @@ var container_height;
 var container_width;
 //used in mouse events
 var container_rect;
-var frames_per_second = 30;
+var frames_per_second = 3;
 //a list of objects in the scene
 var scene_objects = [];
 //a list of velocioties (THREE.Vector3) coresponding to the objectss in scene_objects
@@ -16,7 +16,6 @@ var mouse = new THREE.Vector2();
 var frame_index;
 
 var sun;
-var bq_quad;
 
 init();
 animate();
@@ -39,9 +38,8 @@ function init() {
     var near = 0.1;
     var far = 1000;
     camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(0,0,10);
 
-    //create sun
+    //init geometry
     var sun_geo = new THREE.SphereGeometry();
     var sun_mat = new THREE.ShaderMaterial({
         uniforms: {
@@ -52,47 +50,10 @@ function init() {
         fragmentShader: sunFragmentShader()
     });
     sun = new THREE.Mesh(sun_geo, sun_mat);
-    sun.position.set(0, 0, 2);
-    scene.add(sun);
+    sun.position.set(0, 0, 0);
+    //scene.add(sun);
     //sun.position.z=-10;
-
-    //create bg quad
-    //first find the correct scale of the quad to cover the canvas
-    console.log("camera.position: "+vector3ToString(camera.position));
-    //gotta render the scene for the raycaster to work
-    renderer.render(scene, camera);
-    
-    raycaster.setFromCamera(new THREE.Vector2(1, 1), camera);
-    //a constant for calculating the intersection of the top right corner with the xy plane (z=0)
-    //console.log("raycaster.ray.origin.z: "+raycaster.ray.origin.z);
-    //console.log("raycaster.ray.direction.z: "+raycaster.ray.direction.z);
-    c_top_right = -raycaster.ray.origin.z / raycaster.ray.direction.z;
-    console.log("c_top_right: "+c_top_right);
-    //the position of the top right corner in world space 
-    var xy_top_right = raycaster.ray.origin.add(raycaster.ray.direction.multiplyScalar(c_top_right));
-    console.log("xy_top_right: "+vector3ToString(xy_top_right));
-
-    raycaster.setFromCamera(new THREE.Vector2(-1, -1), camera);
-    //a constant for calculating the intersection of the bottom left corner with the xy plane (z=0)
-    c_btm_left = -raycaster.ray.origin.z / raycaster.ray.direction.z;
-    //the position of the top right corner in world space 
-    var xy_btm_left = raycaster.ray.origin.add(raycaster.ray.direction.multiplyScalar(c_btm_left));
-    console.log("xy_btm_left: "+vector3ToString(xy_btm_left));
-
-    var bg_world_width = 16;
-    var bg_world_height = 8;
-    var bg_quad_geo = new THREE.PlaneGeometry(bg_world_width, bg_world_height);
-    var bg_quad_mat = new THREE.ShaderMaterial({
-        uniforms: {
-            bg_tex: { type: "t", value: (new THREE.TextureLoader()).load( "images/textures/A_Horseshoe_Einstein_Ring_from_Hubble.jpg" ) }
-        },
-        vertexShader: bgVertexShader(),
-        fragmentShader: bgFragmentShader()
-    });
-    bg_quad_mat.transparent = true;
-    bg_quad = new THREE.Mesh(bg_quad_geo, bg_quad_mat);
-    bg_quad.position.set(0, 0, 0);
-    scene.add(bg_quad);
+    camera.position.z = 5;
 
     //set up event listeners
 
@@ -103,13 +64,23 @@ function init() {
     document.onkeydown = function (e) {
         //console.log(String.fromCharCode(e.keyCode));
         switch (String.fromCharCode(e.keyCode)) {
+            case "A":
+                debug_print_scene_object_position();
+                break;
             default:
-                //console.log(String.fromCharCode(e.keyCode));
                 return;
         }
     };
 }
 
+function debug_print_scene_object_position() {
+    console.log("positions:");
+    for (var i = 0; i < scene_objects.length; i++) {
+        console.log("i = " + i);
+        console.log("pos: (" + scene_objects[i].position.x + ", " + scene_objects[i].position.y + ")");
+        console.log("vel: (" + scene_object_velocities[i].x + ", " + scene_object_velocities[i].y + ")");
+    }
+}
 //event listeners
 function onMouseDown(event) {
     //get the mouse pos relative to the top left corner of the webgl div
@@ -134,7 +105,11 @@ function onMouseDown(event) {
         //get the rays intersection with the xy plane (z=0)
         c = -raycaster.ray.origin.z / raycaster.ray.direction.z;
         var xy_intersect = raycaster.ray.origin.add(raycaster.ray.direction.multiplyScalar(c));
-        console.log("ray intersect w xy plane is (" + xy_intersect.x + ", " + xy_intersect.y, ", " + xy_intersect.z + ")");
+        //console.log("ray intersect w xy plane is (" + xy_intersect.x + ", " + xy_intersect.y, ", " + xy_intersect.z + ")");
+        color_a = Math.random() * 0xffffff;
+        color_b = Math.random() * 0xffffff;
+        newest_planet = createPlanet(xy_intersect, new THREE.Vector3(0.1, 0.1, 0.1), color_a, color_b);
+
     }
 
     container.addEventListener('mousemove', onMouseMove, false);
@@ -168,19 +143,83 @@ function onWindowResize() {
 
 function animate() {
     sun.rotation.x += 0.01;
-    sun.rotation.y += 0.02;
-    sun.rotation.z += 0.03;
+    sun.rotation.y += 0.03;
+    sun.rotation.z += 0.02;
     //requestAnimationFrame(animate);
     //limit the framerate to 30fps
     setTimeout(function () {
+
         requestAnimationFrame(animate);
+
     }, 1000 / frames_per_second);
-    //console.log("frame: " + frame_index);
-    frame_index += 1;
+    //rotate all objects in scene_objects
+    //console.log("scene_objects.length: " + scene_objects.length);
+    for (var i of scene_objects) {
+        i.rotation.x += 0.01;
+        i.rotation.y += 0.01;
+    }
+    console.log("frame: "+frame_index);
+    frame_index+=1;
+    physics();
     renderer.render(scene, camera);
 }
 
-/* #region Shaders */
+function physics() {
+    //calculate the force on each object in scene_objects
+    var g_forces = calculateGForces();
+    //apply the acceleration to each object velocity
+    applyForces(g_forces);
+}
+
+function calculateGForces() {
+    if (scene_objects.length == 0) return [];
+    if (scene_objects.length == 1) return [new THREE.Vector3(0, 0, 0)];
+    //a list of vectors representing the newtons to apply to the corelating object in scene_object
+    var forces = [];
+    for (var i = 0; i < scene_objects.length; i++) {
+        var f = new THREE.Vector3(0, 0, 0);
+        for (var j = 0; j < scene_objects.length; j++) {
+            if (i == j) continue;
+            //j-i normalized
+            var i_to_j = scene_objects[j].position.clone().sub(scene_objects[i].position.clone());
+            //var i_to_j = scene_objects[j].position.sub(scene_objects[i].position);
+            //multiply by gravitational constant (fG = g*m1*m2/(r^2))
+            //calculate mass based on scale
+            var m1 = scene_objects[i].scale.length();
+            var m2 = scene_objects[j].scale.length();
+            var fG = grav_constant * m1 * m2 / (i_to_j.length() ^ 2);
+            //the force (in newtons from i to j) vector3
+            var f_ij = i_to_j.normalize().multiplyScalar(fG);
+            f = f.add(f_ij);
+        }
+        forces.push(f);
+    }
+    //console.log(forces);
+    return forces;
+}
+//forces is a list of vector3s representiong acceleration of the coresponding object in scene_objects
+function applyForces(forces) {
+    //console.log("applying forces.");
+    for (var i = 0; i < forces.length; i++) {
+        //the acceleration on i
+        // f=ma
+        // a=f/m
+        console.log("f_"+i+" = "+ vector3ToString(forces[i]));
+        var m = scene_objects[i].scale.length();
+        console.log("m_"+i+" = "+m);
+        var a = forces[i].multiplyScalar(1 / m);
+        console.log("a_"+i+" = "+vector3ToString(a));
+        //add a / delta time to velocity
+        //scene_objects[i].velocity.set(scene_objects[i].velocity.add(a.multiplyScalar(1/frames_per_second)));
+        scene_object_velocities[i] = scene_object_velocities[i].add(a.multiplyScalar(1 / frames_per_second ));
+        console.log("v_"+i+" = "+ vector3ToString(scene_object_velocities[i].add(a.multiplyScalar(1 / frames_per_second ))));
+    }
+
+    //update positions based on velocity
+    for (var i = 0; i < scene_objects.length; i++) {
+        //scene_objects[i].position.set(scene_objects[i].position.add(scene_object_velocities[i].multiplyScalar(1 / frames_per_second)));
+    }
+}
 
 function sunVertexShader() {
     return `
@@ -207,33 +246,29 @@ function sunFragmentShader() {
     `
 }
 
-function bgVertexShader() {
-    return `
-        varying vec2 vUv; 
-
-        void main() {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-            vUv = uv;
-        }
-    `
-}
-
-function bgFragmentShader() {
-    return `
-        uniform sampler2D bg_tex;
-
-        varying vec2 vUv;
-
-        void main() {
-            //gl_FragColor = vec4(0, 1, 0.5, 0.5);
-            gl_FragColor = texture2D(bg_tex, vUv);
-            gl_FragColor.b = 0.99;
-        }
-    `
-}
-
-/* #endregion */
-
 function vector3ToString(v) {
     return "(" + v.x + ", " + v.y + ", " + v.z + ")";
+}
+
+function createPlanet(position, scale, color_a, color_b) {
+    var geo = new THREE.SphereGeometry();
+    var mat = new THREE.ShaderMaterial({
+        uniforms: {
+            colorB: { type: 'vec3', value: new THREE.Color(color_b) },
+            colorA: { type: 'vec3', value: new THREE.Color(color_a) }
+        },
+        vertexShader: sunVertexShader(),
+        fragmentShader: sunFragmentShader()
+    });
+    planet = new THREE.Mesh(geo, mat);
+    planet.position.set(position.x,
+        position.y,
+        position.z);
+    planet.scale.set(scale.x,
+        scale.y,
+        scale.z);
+    //planet.velocity = new THREE.Vector3(0,0,0);
+    scene.add(planet);
+    scene_objects.push(planet);
+    scene_object_velocities.push(new THREE.Vector3(0, 0, 0));
 }

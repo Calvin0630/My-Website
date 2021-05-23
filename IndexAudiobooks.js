@@ -23,28 +23,39 @@ module.exports = {
             info = folders[f].split(" - ");
             //read the contents of the folder into a list of filenames called chapters
             try {
-                var chapters = fs.readdirSync(__dirname + '/public/audiobooks/' + folders[f] + "/");
+                var chapterNames = fs.readdirSync(__dirname + '/public/audiobooks/' + folders[f] + "/");
             } catch (e) {
                 console.log(e);
             }
             //filter out non mp3 files
             //a regex to match extensions
-            var extRegex =/\.([0-9a-z]+)(?=[?#])|(\.)(?:[\w]+)$/gmi;
-            //a version of chapter only containing mp3 files
-            chaptersFiltered = [];
-            for (i in chapters) {
-                var extension = chapters[i].match(extRegex);
+            var extRegex = /\.([0-9a-z]+)(?=[?#])|(\.)(?:[\w]+)$/gmi;
+            //a version of chapterNames only containing mp3 files
+            chapterNamesFiltered = [];
+            for (i in chapterNames) {
+                var extension = chapterNames[i].match(extRegex);
                 //if the file type is mp3
                 if (extension == ".mp3") {
                     //add it to the filtered list
-                    chaptersFiltered.push(chapters[i]);
+                    chapterNamesFiltered.push(chapterNames[i]);
                 }
             }
-            chapters=chaptersFiltered;
+            chapterNames = chapterNamesFiltered;
+            for (i in chapterNames) {
+                try {
+                    var metadata = await mm.parseFile(__dirname + "/public/audiobooks/" + folders[f] + "/" +chapterNames[i]);
+                    //console.log(util.inspect(metadata, { showHidden: false, depth: null }));
+                    //console.log("codec: "+metadata.format.codec);
+                    //console.log("track#??  "+metadata.native.ID3v1[2].value);
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
             //console.log("info: "+info[0]+", "+info[1]);
             //console.log("folders[f]: "+folders[f]);
             //console.log("chapters: "+chapters);
-            var book = new Book(info[0], info[1], folders[f], chapters);
+            var book = new Book(info[0], info[1], folders[f], chapterNames);
             //console.log(book);
             this.bookList.push(book);
         }
