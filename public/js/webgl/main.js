@@ -1,22 +1,35 @@
 class LFO {
-    constructor(origin = new THREE.Vector2(0, 0), freq = 1) {
+    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, opacity=0.5) {
         //a vector2 in screen space
         this.origin = origin;
         this.freq = freq;
+        this.colorA = colorA;
+        this.colorB = colorB;
+        this.opacity = opacity;
         return this;
     }
 
-    setLFOFreq(value) {
-        this.freq = value;
+    setLFOFreq(value) { this.freq = value; }
 
-    }
+    setOriginX(value) { this.origin.x = value; }
 
-    setOriginX(value) {
-        this.origin.x = value;
-    }
+    setOriginY(value) { this.origin.y = value; }
 
-    setOriginY(value) {
-        this.origin.y = value;
+    setColorARed(value) { this.colorA.x = value; }
+
+    setColorAGreen(value) { this.colorA.y = value; }
+
+    setColorABlue(value) { this.colorA.z = value; }
+
+    setColorBRed(value) { this.colorB.x = value; }
+
+    setColorBGreen(value) { this.colorB.y = value; }
+
+    setColorBBlue(value) { this.colorB.z = value; }
+
+    setAlpha(value) {
+        this.colorA.w = value;
+        this.colorB.w = value;
     }
 }
 
@@ -26,7 +39,6 @@ var renderer;
 var container;
 var container_height;
 var container_width;
-var fullscreen = false;
 //used in mouse events
 var container_rect;
 var frames_per_second = 30;
@@ -45,6 +57,8 @@ var start_time;
 var current_time;
 
 var freq_slider;
+var colorA_sampler;
+var colorB_sampler;
 
 init();
 animate();
@@ -104,7 +118,10 @@ function init() {
             bg_tex: { type: "t", value: (new THREE.TextureLoader()).load("images/textures/A_Horseshoe_Einstein_Ring_from_Hubble.jpg") },
             time: { type: "float", value: 0 },
             origin: { type: "vec2", value: lfo.origin },
-            freq: { type: "float", value: lfo.freq }
+            freq: { type: "float", value: lfo.freq },
+            colorA: {type: "vec3", value: new THREE.Vector3(0,0,0)},
+            colorB: {type: "vec3", value: new THREE.Vector3(1,1,1)},
+            opacity: {type: "float", value: 0.5}
         },
         vertexShader: bgVertexShader(),
         fragmentShader: bgFragmentShader()
@@ -115,7 +132,9 @@ function init() {
     bg_quad = new THREE.Mesh(bg_quad_geo, bg_quad_mat);
     bg_quad.position.set(0, 0, 0);
     scene.add(bg_quad);
-
+    //setup color sample
+    colorA_sampler = document.getElementsByClassName('color-a-sample')[0];
+    colorB_sampler = document.getElementsByClassName('color-b-sample')[0];
 
 
     //set up event listeners
@@ -233,25 +252,76 @@ function onOriginYSliderChange(value) {
     bg_quad.material.uniforms.origin.value.y = value;
 }
 
-function toggleFullScreen() {
-    if (!fullscreen) {
-        var elem = container;
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-        } else if (elem.mozRequestFullScreen) { /* Firefox */
-            elem.mozRequestFullScreen();
-        } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { /* IE/Edge */
-            elem.msRequestFullscreen();
-        }
-        elem.style.width = '100%';
-        elem.style.height = '100%';
-    }
-    else {
+function onColorARedSliderChange(slider) {
+    lfo.colorA.x = slider.value/255;
+    console.log(lfo.colorA.x);
+    slider.style.background = RGB2HTML(slider.value,0,0);
+    updateColorA();
+}
 
+function onColorAGreenSliderChange(slider) {
+    lfo.colorA.y = slider.value/255;
+    console.log(lfo.colorA.y);
+    slider.style.background = RGB2HTML(0,slider.value,0);
+    updateColorA();
+}
+
+function onColorABlueSliderChange(slider) {
+    lfo.colorA.z = slider.value/255;
+    console.log(lfo.colorA.z);
+    slider.style.background = RGB2HTML(0,0,slider.value);
+    updateColorA();
+}
+
+function updateColorA() {
+    colorA_sampler.style.background = RGB2HTML(lfo.colorA.x*255, lfo.colorA.y*255, lfo.colorA.z*255);
+    bg_quad.material.uniforms.colorA.value = lfo.colorA;
+}
+
+function onColorBRedSliderChange(slider) {
+    lfo.colorB.x = slider.value/255;
+    console.log(lfo.colorB.x);
+    slider.style.background = RGB2HTML(slider.value,0,0);
+    updateColorB();
+}
+
+function onColorBGreenSliderChange(slider) {
+    lfo.colorB.y = slider.value/255;
+    console.log(lfo.colorB.y);
+    slider.style.background = RGB2HTML(0,slider.value,0);
+    updateColorB();
+}
+
+function onColorBBlueSliderChange(slider) {
+    lfo.colorB.z = slider.value/255;
+    console.log(lfo.colorB.z);
+    slider.style.background = RGB2HTML(0,0,slider.value);
+    updateColorB();
+}
+
+function updateColorB() {
+    colorB_sampler.style.background = RGB2HTML(lfo.colorB.x*255, lfo.colorB.y*255, lfo.colorB.z*255);
+    bg_quad.material.uniforms.colorB.value = lfo.colorB;
+}
+
+function onOpacitySliderChange(value) {
+    lfo.colorB.opacity = value;
+    bg_quad.material.uniforms.opacity.value = value;
+}
+
+function fullScreen() {
+    var elem = container;
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
     }
-    fullscreen = !fullscreen;
+    elem.style.width = '100%';
+    elem.style.height = '100%';
 }
 
 /* #endregion */
@@ -271,23 +341,28 @@ function bgVertexShader() {
 
 function bgFragmentShader() {
     return `
+        float circle_constant;
+
         uniform sampler2D bg_tex;
         uniform float time;
         uniform vec2 origin;
         uniform float freq;
+        uniform vec3 colorA;
+        uniform vec3 colorB;
+        uniform float opacity;
 
         varying vec2 vUv;
 
         void main() {
             //start by getting uvs in screen coords [(-1,-1), (1,1)]
             vec2 uv = (vUv - vec2(0.5,0.5));
-            //float dist_origin = length(uv-origin);
-            //gl_FragColor = vec4(0, 1, 0.5, 0.5);
-            gl_FragColor = texture2D(bg_tex, vUv);
+            gl_FragColor.r = 0.;
             //gl_FragColor.b = 0.7;
-            gl_FragColor.g = abs(sin((freq*100.*distance(uv, -origin)) + time));
-            //gl_FragColor.b = length(uv);
-            gl_FragColor.b = distance(uv, origin);
+            //gl_FragColor.g = abs(sin((freq*100.*distance(uv, -origin)) + time));
+            circle_constant = abs(sin((freq*100.*distance(uv, -origin)) + time));
+            gl_FragColor.r = distance(uv, origin);
+            gl_FragColor.rgb = mix(colorA, colorB, circle_constant);
+            gl_FragColor.a = opacity;
         }
     `
 }
@@ -299,3 +374,7 @@ function vector3ToString(v) {
     return "(" + v.x + ", " + v.y + ", " + v.z + ")";
 }
 
+function RGB2HTML(r, g, b){
+    return "rgb("+r+","+g+","+b+")";
+}
+/*#endregion*/
