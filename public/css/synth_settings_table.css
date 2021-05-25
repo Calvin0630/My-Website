@@ -8,7 +8,7 @@
 .synth-table table {
     table-layout: auto;
     width:100%;
-    
+    border-collapse: collapse;
     
 }
 
@@ -30,6 +30,9 @@
 
 .synth-table th, .synth-table td, .synth-table thead th, .synth-table tbody td, .synth-table tfoot td, .synth-table tfoot th {
     width: auto;
+}
+.synth-table tr {
+    border: 2px solid black;
 }
 
 .slidecontainer {

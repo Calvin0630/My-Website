@@ -1,15 +1,20 @@
 class LFO {
-    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, opacity=0.5) {
+    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, speed = 1, opacity=0.5, wobbleIntensity, wobblePeriod = 20) {
         //a vector2 in screen space
         this.origin = origin;
         this.freq = freq;
+        this.speed = speed;
         this.colorA = colorA;
         this.colorB = colorB;
         this.opacity = opacity;
+        this.wobbleIntensity = wobbleIntensity;
+        this.wobblePeriod = wobblePeriod;
         return this;
     }
 
     setLFOFreq(value) { this.freq = value; }
+
+    setSpeed(value) { this.speed = value; }
 
     setOriginX(value) { this.origin.x = value; }
 
@@ -31,6 +36,10 @@ class LFO {
         this.colorA.w = value;
         this.colorB.w = value;
     }
+
+    setWobbleIntesity(value) { this.wobbleIntensity = value; }
+
+    setWobblePeriod(value) { this.wobblePeriod = value; }
 }
 
 var scene;
@@ -117,11 +126,14 @@ function init() {
         uniforms: {
             bg_tex: { type: "t", value: (new THREE.TextureLoader()).load("images/textures/A_Horseshoe_Einstein_Ring_from_Hubble.jpg") },
             time: { type: "float", value: 0 },
+            speed: { type: "float", value: 1 },
             origin: { type: "vec2", value: lfo.origin },
             freq: { type: "float", value: lfo.freq },
             colorA: {type: "vec3", value: new THREE.Vector3(0,0,0)},
             colorB: {type: "vec3", value: new THREE.Vector3(1,1,1)},
-            opacity: {type: "float", value: 0.5}
+            opacity: {type: "float", value: 0.5},
+            wIntensity: {type: "float", value: 0},
+            wPeriod: {type: "float", value: 20}
         },
         vertexShader: bgVertexShader(),
         fragmentShader: bgFragmentShader()
@@ -238,6 +250,12 @@ function onFreqSliderChange(value) {
     bg_quad.material.uniforms.freq.value = value;
 }
 
+function onSpeedSliderChange(value) {
+    //console.log(value);
+    lfo.setSpeed(value);
+    bg_quad.material.uniforms.speed.value = value;
+}
+
 function onOriginXSliderChange(value) {
     //console.log(value);
     //update lfo object
@@ -246,7 +264,7 @@ function onOriginXSliderChange(value) {
 }
 
 function onOriginYSliderChange(value) {
-    console.log(value);
+    //console.log(value);
     //update lfo object
     lfo.setOriginY(value);
     bg_quad.material.uniforms.origin.value.y = value;
@@ -254,21 +272,21 @@ function onOriginYSliderChange(value) {
 
 function onColorARedSliderChange(slider) {
     lfo.colorA.x = slider.value/255;
-    console.log(lfo.colorA.x);
+    //console.log(lfo.colorA.x);
     slider.style.background = RGB2HTML(slider.value,0,0);
     updateColorA();
 }
 
 function onColorAGreenSliderChange(slider) {
     lfo.colorA.y = slider.value/255;
-    console.log(lfo.colorA.y);
+    //console.log(lfo.colorA.y);
     slider.style.background = RGB2HTML(0,slider.value,0);
     updateColorA();
 }
 
 function onColorABlueSliderChange(slider) {
     lfo.colorA.z = slider.value/255;
-    console.log(lfo.colorA.z);
+    //console.log(lfo.colorA.z);
     slider.style.background = RGB2HTML(0,0,slider.value);
     updateColorA();
 }
@@ -309,6 +327,18 @@ function onOpacitySliderChange(value) {
     bg_quad.material.uniforms.opacity.value = value;
 }
 
+function onWIntensitySliderChange(value) {
+    //console.log(value);
+    lfo.setWobbleIntesity(value);
+    bg_quad.material.uniforms.wIntensity.value = value;
+}
+
+function onWPeriodSliderChange(value) {
+    console.log(value);
+    lfo.setWobblePeriod(value);
+    bg_quad.material.uniforms.wPeriod.value = value;
+}
+
 function fullScreen() {
     var elem = container;
     if (elem.requestFullscreen) {
@@ -345,25 +375,38 @@ function bgFragmentShader() {
 
         uniform sampler2D bg_tex;
         uniform float time;
+        uniform float speed;
         uniform vec2 origin;
         uniform float freq;
         uniform vec3 colorA;
         uniform vec3 colorB;
         uniform float opacity;
+        uniform float wIntensity;
+        uniform float wPeriod;
 
         varying vec2 vUv;
+
+        
+        //my fn to do a%b because stupid errors
+        float myMod(float a, float b) {
+            return a - (b * floor(a/b));
+        }
 
         void main() {
             //start by getting uvs in screen coords [(-1,-1), (1,1)]
             vec2 uv = (vUv - vec2(0.5,0.5));
+            //apply wobble to uv
+            uv.x = uv.x + wIntensity*0.05*sin(101.*uv.x*(sin(time/wPeriod)+1.));
+            uv.y = uv.y + wIntensity*0.05*sin(101.*uv.y*(sin(time/wPeriod)+1.));
             gl_FragColor.r = 0.;
             //gl_FragColor.b = 0.7;
             //gl_FragColor.g = abs(sin((freq*100.*distance(uv, -origin)) + time));
-            circle_constant = abs(sin((freq*100.*distance(uv, -origin)) + time));
+            circle_constant = abs(sin((freq*100.*distance(uv, -origin)) + (time*speed)));
             gl_FragColor.r = distance(uv, origin);
             gl_FragColor.rgb = mix(colorA, colorB, circle_constant);
             gl_FragColor.a = opacity;
         }
+
     `
 }
 
