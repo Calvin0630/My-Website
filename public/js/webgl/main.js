@@ -291,35 +291,39 @@ function onColorABlueSliderChange(slider) {
     updateColorA();
 }
 
+//updates the shader and color preview div
 function updateColorA() {
     colorA_sampler.style.background = RGB2HTML(lfo.colorA.x*255, lfo.colorA.y*255, lfo.colorA.z*255);
     bg_quad.material.uniforms.colorA.value = lfo.colorA;
+    //console.log("updateColorA"+vector3ToString(lfo.colorA));
 }
 
 function onColorBRedSliderChange(slider) {
     lfo.colorB.x = slider.value/255;
-    console.log(lfo.colorB.x);
+    //console.log(lfo.colorB.x);
     slider.style.background = RGB2HTML(slider.value,0,0);
     updateColorB();
 }
 
 function onColorBGreenSliderChange(slider) {
     lfo.colorB.y = slider.value/255;
-    console.log(lfo.colorB.y);
+    //console.log(lfo.colorB.y);
     slider.style.background = RGB2HTML(0,slider.value,0);
     updateColorB();
 }
 
 function onColorBBlueSliderChange(slider) {
     lfo.colorB.z = slider.value/255;
-    console.log(lfo.colorB.z);
+    //console.log(lfo.colorB.z);
     slider.style.background = RGB2HTML(0,0,slider.value);
     updateColorB();
 }
 
+//updates the shader and color preview div
 function updateColorB() {
     colorB_sampler.style.background = RGB2HTML(lfo.colorB.x*255, lfo.colorB.y*255, lfo.colorB.z*255);
     bg_quad.material.uniforms.colorB.value = lfo.colorB;
+    //console.log("updateColorB"+vector3ToString(lfo.colorB));
 }
 
 function onOpacitySliderChange(value) {
@@ -334,7 +338,7 @@ function onWIntensitySliderChange(value) {
 }
 
 function onWPeriodSliderChange(value) {
-    console.log(value);
+    //console.log(value);
     lfo.setWobblePeriod(value);
     bg_quad.material.uniforms.wPeriod.value = value;
 }
@@ -396,8 +400,8 @@ function bgFragmentShader() {
             //start by getting uvs in screen coords [(-1,-1), (1,1)]
             vec2 uv = (vUv - vec2(0.5,0.5));
             //apply wobble to uv
-            uv.x = uv.x + wIntensity*0.05*sin(101.*uv.x*(sin(time/wPeriod)+1.));
-            uv.y = uv.y + wIntensity*0.05*sin(101.*uv.y*(sin(time/wPeriod)+1.));
+            uv.x = uv.x + wIntensity*0.2*sin((100.*uv.x)*(sin(time/wPeriod)+1.));
+            uv.y = uv.y + wIntensity*0.2*sin((100.*uv.y)*(sin(time/wPeriod)+1.));
             gl_FragColor.r = 0.;
             //gl_FragColor.b = 0.7;
             //gl_FragColor.g = abs(sin((freq*100.*distance(uv, -origin)) + time));

@@ -1,47 +1,44 @@
 <%- include ("../partials/head"); %>
-<div class="view-container">
-    <%- include ("../partials/sidebar"); %>
 
-    <div class="right-panel">
-        <%- include ("../partials/header"); %>
-        <div class="content-container">
-            <% bookList.forEach(function(book) { %>
-            <% if(book.location==location){ %>
-            <div class="chapter-list-container">
-                <a href="/audiobooks">
-                    <img src="/images/ui/back.png" class="back-button">
-                </a>
-                <br>
-                <h1><%= book.title %></h1>
-                <h3>by</h3>
-                <h2><%= book.author %></h2>
-                <% if (book.chapters.length==1) {%>
-                <!--There is only one chapter-->
-                <div class="chapter-container">
-                    <%chapterSource = "/audiobooks/"+location+"/"+book.chapters[0] %>
-                    <audio controls>
-                        <source src="<%= chapterSource %>" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-                <% } else { %>
-                <!--There is more than one chapter.-->
-                <% book.chapters.forEach(function(chapter, i) { %>
-                    <div class="chapter-container">
-                        <h2> <%= chapter.substring(0, (chapter.length-4)) %> </h2>
-                        <%chapterSource = "/audiobooks/"+location+"/"+chapter %>
-                        <audio controls>
-                            <source src="<%= chapterSource %>" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
-                    <% }); %>
-                <% } %>
-                
+
+    <%- include ("../partials/header"); %>
+    <div class="content-container">
+        <% bookList.forEach(function(book) { %>
+        <% if(book.location==location){ %>
+        <div class="chapter-list-container">
+            <a href="/audiobooks">
+                <img src="/images/ui/back.png" class="back-button">
+            </a>
+            <br>
+            <h1><%= book.title %></h1>
+            <h3>by</h3>
+            <h2><%= book.author %></h2>
+            <% if (book.chapters.length==1) {%>
+            <!--There is only one chapter-->
+            <div class="chapter-container">
+                <%chapterSource = "/audiobooks/"+location+"/"+book.chapters[0] %>
+                <audio controls>
+                    <source src="<%= chapterSource %>" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
             </div>
-            <% } %>
+            <% } else { %>
+            <!--There is more than one chapter.-->
+            <% book.chapters.forEach(function(chapter, i) { %>
+            <div class="chapter-container">
+                <h2> <%= chapter.substring(0, (chapter.length-4)) %> </h2>
+                <%chapterSource = "/audiobooks/"+location+"/"+chapter %>
+                <audio controls>
+                    <source src="<%= chapterSource %>" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
             <% }); %>
+            <% } %>
+
         </div>
+        <% } %>
+        <% }); %>
     </div>
 
     <%- include ("../partials/footer"); %>

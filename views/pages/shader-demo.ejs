@@ -1,166 +1,178 @@
 <%- include ("../partials/head"); %>
-<div class="view-container">
-    <%- include ("../partials/sidebar"); %>
-
-    <div class="right-panel">
-
-        <%- include ("../partials/header"); %>
-
-        <div class='content-container'>
-            <h1>Visual Synth</h1>
-            <h2>This is a digital synth I built that functions in the pixel domain.</h2>
-            <button onclick="fullScreen()" class="fullscreen-button">Fullscreen</button>
-            <div class="synth-table">
-                <h1>LFO</h1>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <h3>Frequency</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="0.01" max="10" step="0.01" value="1" class="slider"
-                                        id="freq-slider" oninput="onFreqSliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Speed</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="-30" max="30" step="0.01" value="1" class="slider" oninput="onSpeedSliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Origin X</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="-1" max="1" step="0.01" value="0" class="slider" oninput="onOriginXSliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Origin Y</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="-1" max="1" step="0.01" value="0" class="slider" oninput="onOriginYSliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3> Colour A</h3>
-                                <div class="color-a-sample">_ </div>
-                            </td>
-                            <td> </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h4>R</h4>
-                            </td>
-                            <td>
-                                <input type="range" min="0" max="255" step="1" value="0" class="slider" oninput="onColorARedSliderChange(this)">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h4>G</h4>
-                            </td>
-                            <td>
-                                <input type="range" min="0" max="255" step="1" value="0" class="slider" oninput="onColorAGreenSliderChange(this)">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h4>B</h4>
-                            </td>
-                            <td>
-                                <input type="range" min="0" max="255" step="1" value="0" class="slider" oninput="onColorABlueSliderChange(this)">
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <h3> Colour B</h3>
-                                <div class="color-b-sample">_ </div>
-                            </td>
-                            <td> </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h4>R</h4>
-                            </td>
-                            <td>
-                                <input type="range" min="0" max="255" step="1" value="0" class="slider" oninput="onColorBRedSliderChange(this)">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h4>G</h4>
-                            </td>
-                            <td>
-                                <input type="range" min="0" max="255" step="1" value="0" class="slider" oninput="onColorBGreenSliderChange(this)">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h4>B</h4>
-                            </td>
-                            <td>
-                                <input type="range" min="0" max="255" step="1" value="0" class="slider" oninput="onColorBBlueSliderChange(this)">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Opacity</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="0" max="1" step="0.001" value="0.5" class="slider" oninput="onOpacitySliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Wobble Intensity</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="0" max="0.25" step="0.001" value="0" class="slider" oninput="onWIntensitySliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Wobble Period</h3>
-                            </td>
-                            <td>
-                                <div class="slidecontainer">
-                                    <input type="range" min="0" max="100" step="0.001" value="20" class="slider" oninput="onWPeriodSliderChange(this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <canvas class="webgl" id="webgl"></canvas>
-            <script src="/js/webgl/three.js"></script>
-            <!--a helper for mouse input in three.js-->
-            <script src="/js/webgl/main.js"></script>
 
 
-        </div>>
+
+<%- include ("../partials/header"); %>
+
+<div class='content-container'>
+    <h1>Visual Synth</h1>
+    <h2>This is a digital synth I built that functions in the pixel domain.</h2>
+    <div class="synth-container">
+        <canvas class="webgl" id="webgl"></canvas>
+        <button onclick="fullScreen()" class="fullscreen-button">Fullscreen</button>
+        <div class="synth-table">
+            <h1>LFO</h1>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <h3>Frequency</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="0.01" max="10" step="0.01" value="1" class="slider"
+                                    id="freq-slider" oninput="onFreqSliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Speed</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="-30" max="30" step="0.01" value="1" class="slider"
+                                    oninput="onSpeedSliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Origin X</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="-1" max="1" step="0.01" value="0" class="slider"
+                                    oninput="onOriginXSliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Origin Y</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="-1" max="1" step="0.01" value="0" class="slider"
+                                    oninput="onOriginYSliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3> Colour A</h3>
+                            <div class="color-a-sample">_ </div>
+                        </td>
+                        <td> </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>R</h4>
+                        </td>
+                        <td>
+                            <input type="range" min="0" max="255" step="1" value="0" class="slider"
+                                oninput="onColorARedSliderChange(this)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>G</h4>
+                        </td>
+                        <td>
+                            <input type="range" min="0" max="255" step="1" value="0" class="slider"
+                                oninput="onColorAGreenSliderChange(this)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>B</h4>
+                        </td>
+                        <td>
+                            <input type="range" min="0" max="255" step="1" value="0" class="slider"
+                                oninput="onColorABlueSliderChange(this)">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h3> Colour B</h3>
+                            <div class="color-b-sample">_ </div>
+                        </td>
+                        <td> </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>R</h4>
+                        </td>
+                        <td>
+                            <input type="range" min="0" max="255" step="1" value="0" class="slider"
+                                oninput="onColorBRedSliderChange(this)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>G</h4>
+                        </td>
+                        <td>
+                            <input type="range" min="0" max="255" step="1" value="0" class="slider"
+                                oninput="onColorBGreenSliderChange(this)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>B</h4>
+                        </td>
+                        <td>
+                            <input type="range" min="0" max="255" step="1" value="0" class="slider"
+                                oninput="onColorBBlueSliderChange(this)">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Opacity</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="0" max="1" step="0.001" value="0.5" class="slider"
+                                    oninput="onOpacitySliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Wobble Intensity</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="0" max="0.125" step="0.001" value="0" class="slider"
+                                    oninput="onWIntensitySliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Wobble Period</h3>
+                        </td>
+                        <td>
+                            <div class="slidecontainer">
+                                <input type="range" min="0.01" max="100" step="0.001" value="20" class="slider"
+                                    oninput="onWPeriodSliderChange(this.value)">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <script src="/js/webgl/three.js"></script>
+        <!--a helper for mouse input in three.js-->
+        <script src="/js/webgl/main.js"></script>
     </div>
+
+
+
 </div>
+
 
 
 <%- include ("../partials/footer"); %>

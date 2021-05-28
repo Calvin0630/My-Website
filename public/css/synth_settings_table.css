@@ -1,15 +1,17 @@
 .synth-table {
     background-color: rgb(243, 189, 189);
-    color: rgb(0,0,0);
+    color: rgb(0, 0, 0);
     padding: 2%;
     margin-bottom: 2%;
+    position:absolute;
+    top:2%;
+    left:2%;
 }
 
 .synth-table table {
     table-layout: auto;
-    width:100%;
+    width: 100%;
     border-collapse: collapse;
-    
 }
 
 .synth-table h1 {
@@ -31,62 +33,82 @@
 .synth-table th, .synth-table td, .synth-table thead th, .synth-table tbody td, .synth-table tfoot td, .synth-table tfoot th {
     width: auto;
 }
+
 .synth-table tr {
     border: 2px solid black;
 }
 
 .slidecontainer {
-    width: 100%; /* Width of the outside container */
-  }
-  
-  /* The slider itself */
-  .slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
+    width: 100%;
+    /* Width of the outside container */
+}
+
+/* The slider itself */
+
+.slider {
+    -webkit-appearance: none;
+    /* Override default CSS styles */
     appearance: none;
-    width: 100%; /* Full-width */
-    height: 25px; /* Specified height */
-    background: #000000; /* Grey background */
+    width: 100%;
+    /* Full-width */
+    height: 25px;
+    /* Specified height */
+    background: #000000;
+    /* Grey background */
     border: 2px solid rgb(255, 86, 86);
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
     transition: opacity .2s;
-  }
-  
-  /* Mouse-over effects */
-  .slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-  }
-  
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
+}
+
+/* Mouse-over effects */
+
+.slider:hover {
+    opacity: 1;
+    /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
     appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #ff2290; /* Pink background */
-    cursor: pointer; /* Cursor on hover */
-  }
-  
-  .slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #ff2290; /* Pink background */
-    cursor: pointer; /* Cursor on hover */
-  }
+    width: 25px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    background: #ff2290;
+    /* Pink background */
+    cursor: pointer;
+    /* Cursor on hover */
+}
 
-  .fullscreen-button {
+.slider::-moz-range-thumb {
+    width: 25px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    background: #ff2290;
+    /* Pink background */
+    cursor: pointer;
+    /* Cursor on hover */
+}
 
-  }
+.fullscreen-button {}
 
-  .color-a-sample {
-      width:100%;
-      height:5%;
-      background-color: white;
-  }
+.color-a-sample {
+    width: 100%;
+    height: 5%;
+    background-color: white;
+}
 
-  .color-b-sample {
-    width:100%;
-    height:5%;
+.color-b-sample {
+    width: 100%;
+    height: 5%;
     background-color: rgb(0, 0, 0);
 }
