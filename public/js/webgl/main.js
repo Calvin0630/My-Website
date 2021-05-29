@@ -1,8 +1,9 @@
 class LFO {
-    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, speed = 1, opacity=0.5, wobbleIntensity, wobblePeriod = 20) {
+    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, sharpness=0, speed = 1, opacity=0.5, wobbleIntensity, wobblePeriod = 20) {
         //a vector2 in screen space
         this.origin = origin;
         this.freq = freq;
+        this.sharpness = sharpness;
         this.speed = speed;
         this.colorA = colorA;
         this.colorB = colorB;
@@ -40,6 +41,8 @@ class LFO {
     setWobbleIntesity(value) { this.wobbleIntensity = value; }
 
     setWobblePeriod(value) { this.wobblePeriod = value; }
+
+    setSharpness(value) { this.sharpness = this.sharpness;}
 }
 
 var scene;
@@ -129,6 +132,7 @@ function init() {
             speed: { type: "float", value: 1 },
             origin: { type: "vec2", value: lfo.origin },
             freq: { type: "float", value: lfo.freq },
+            sharpness: { type: "float", value: lfo.sharpness },
             colorA: {type: "vec3", value: new THREE.Vector3(0,0,0)},
             colorB: {type: "vec3", value: new THREE.Vector3(1,1,1)},
             opacity: {type: "float", value: 0.5},
@@ -147,7 +151,10 @@ function init() {
     //setup color sample
     colorA_sampler = document.getElementsByClassName('color-a-sample')[0];
     colorB_sampler = document.getElementsByClassName('color-b-sample')[0];
-
+    //init slider colors
+    document.getElementById("color-b_r-slider").style.background = RGB2HTML(255*lfo.colorB.x,0,0);;
+    document.getElementById("color-b_g-slider").style.background = RGB2HTML(0,255*lfo.colorB.y,0);
+    document.getElementById("color-b_b-slider").style.background = RGB2HTML(0,0,255*lfo.colorB.z);
 
     //set up event listeners
 
@@ -159,7 +166,7 @@ function init() {
         //console.log(String.fromCharCode(e.keyCode));
         switch (String.fromCharCode(e.keyCode)) {
             case " ":
-                console.log("Fullscreen!");
+                console.log("not Fullscreen!");
             default:
                 //console.log(String.fromCharCode(e.keyCode));
                 return;
@@ -248,6 +255,11 @@ function onFreqSliderChange(value) {
     lfo.setLFOFreq(value);
     //update shader
     bg_quad.material.uniforms.freq.value = value;
+}
+
+function onSharpnessSliderChange(value) {
+    lfo.setSharpness(value);
+    bg_quad.material.uniforms.sharpness.value = value;
 }
 
 function onSpeedSliderChange(value) {
@@ -375,13 +387,20 @@ function bgVertexShader() {
 
 function bgFragmentShader() {
     return `
+        //calculated each pixel.
+        //this represents the sin value for the lfo
         float circle_constant;
+        //used to change the sharpness.
+        //this is a sqr wave version of the above var
+        float square_constant;
+        float color_mix_constant;
 
         uniform sampler2D bg_tex;
         uniform float time;
         uniform float speed;
         uniform vec2 origin;
         uniform float freq;
+        uniform float sharpness;
         uniform vec3 colorA;
         uniform vec3 colorB;
         uniform float opacity;
@@ -405,9 +424,12 @@ function bgFragmentShader() {
             gl_FragColor.r = 0.;
             //gl_FragColor.b = 0.7;
             //gl_FragColor.g = abs(sin((freq*100.*distance(uv, -origin)) + time));
-            circle_constant = abs(sin((freq*100.*distance(uv, -origin)) + (time*speed)));
+            circle_constant = sin((freq*100.*distance(uv, -origin)) + (time*speed) ) + 1.;
+            square_constant = circle_constant/(abs(circle_constant));
+            color_mix_constant = mix(circle_constant, square_constant, sharpness);
+            color_mix_constant = max(0., color_mix_constant);
             gl_FragColor.r = distance(uv, origin);
-            gl_FragColor.rgb = mix(colorA, colorB, circle_constant);
+            gl_FragColor.rgb = mix(colorA, colorB, color_mix_constant);
             gl_FragColor.a = opacity;
         }
 

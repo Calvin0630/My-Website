@@ -10,7 +10,7 @@ module.exports = {
     },
     bookList: [],
     readAudiobookFiles: async function () {
-        console.log("readAudiobookFiles();");
+        //console.log("readAudiobookFiles();");
         try {
             var folders = fs.readdirSync(__dirname + '/public/audiobooks/');
         } catch (e) {
