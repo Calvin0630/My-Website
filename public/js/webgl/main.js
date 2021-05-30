@@ -72,6 +72,7 @@ var freq_slider;
 var colorA_sampler;
 var colorB_sampler;
 
+alert("EPILEPSY WRNING\n\nThis tool can create flashing images that may trigger a seizure in someone with photosensitive epilepsy.\nStay safe friends (and enemies)!");
 init();
 animate();
 
@@ -151,6 +152,8 @@ function init() {
     //setup color sample
     colorA_sampler = document.getElementsByClassName('color-a-sample')[0];
     colorB_sampler = document.getElementsByClassName('color-b-sample')[0];
+    updateColorA();
+    updateColorB();
     //init slider colors
     document.getElementById("color-b_r-slider").style.background = RGB2HTML(255*lfo.colorB.x,0,0);;
     document.getElementById("color-b_g-slider").style.background = RGB2HTML(0,255*lfo.colorB.y,0);
@@ -251,6 +254,8 @@ function onWindowResize() {
 
 function onFreqSliderChange(value) {
     //console.log(value);
+    //make it exponential
+    value = Math.pow(2, value);
     //update lfo object
     lfo.setLFOFreq(value);
     //update shader
@@ -351,6 +356,7 @@ function onWIntensitySliderChange(value) {
 
 function onWPeriodSliderChange(value) {
     //console.log(value);
+    value = Math.pow(2, value);
     lfo.setWobblePeriod(value);
     bg_quad.material.uniforms.wPeriod.value = value;
 }
@@ -424,8 +430,9 @@ function bgFragmentShader() {
             gl_FragColor.r = 0.;
             //gl_FragColor.b = 0.7;
             //gl_FragColor.g = abs(sin((freq*100.*distance(uv, -origin)) + time));
-            circle_constant = sin((freq*100.*distance(uv, -origin)) + (time*speed) ) + 1.;
-            square_constant = circle_constant/(abs(circle_constant));
+            circle_constant = sin((freq*100.*distance(uv, -origin)) + (time*speed) )/2. + 0.5;
+            //square_constant = circle_constant/(abs(circle_constant));
+            square_constant = step(0.5, circle_constant);
             color_mix_constant = mix(circle_constant, square_constant, sharpness);
             color_mix_constant = max(0., color_mix_constant);
             gl_FragColor.r = distance(uv, origin);
