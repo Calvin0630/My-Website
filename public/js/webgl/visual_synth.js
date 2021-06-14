@@ -1,5 +1,6 @@
+//#region LFO
 class LFO {
-    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, sharpness=0, speed = 1, opacity=0.5, wobbleIntensity, wobblePeriod = 20) {
+    constructor(colorA = new THREE.Vector4(0, 0, 0, 1), colorB = new THREE.Vector4(1, 1, 1, 1), origin = new THREE.Vector2(0, 0), freq = 1, sharpness = 0, speed = 1, opacity = 0.5, wobbleIntensity, wobblePeriod = 20) {
         //a vector2 in screen space
         this.origin = origin;
         this.freq = freq;
@@ -42,9 +43,11 @@ class LFO {
 
     setWobblePeriod(value) { this.wobblePeriod = value; }
 
-    setSharpness(value) { this.sharpness = this.sharpness;}
+    setSharpness(value) { this.sharpness = this.sharpness; }
 }
+//#endregion
 
+//#region Variables
 var scene;
 var camera;
 var renderer;
@@ -72,9 +75,16 @@ var freq_slider;
 var colorA_sampler;
 var colorB_sampler;
 
-alert("EPILEPSY WRNING\n\nThis tool can create flashing images that may trigger a seizure in someone with photosensitive epilepsy.\nStay safe friends (and enemies)!");
-init();
-animate();
+//#endregion
+
+
+jQuery(function () {
+    alert("EPILEPSY WRNING\n\nThis tool can create flashing images that may trigger a seizure in someone with photosensitive epilepsy.\n\nStay safe friends (and enemies)!");
+    init();
+    animate();
+});
+
+
 
 function init() {
     frame_index = 0;
@@ -102,7 +112,7 @@ function init() {
 
     //create bg quad
     //first find the correct scale of the quad to cover the canvas
-    console.log("camera.position: " + vector3ToString(camera.position));
+    //console.log("camera.position: " + vector3ToString(camera.position));
     //gotta render the scene for the raycaster to work
     renderer.render(scene, camera);
 
@@ -134,16 +144,16 @@ function init() {
             origin: { type: "vec2", value: lfo.origin },
             freq: { type: "float", value: lfo.freq },
             sharpness: { type: "float", value: lfo.sharpness },
-            colorA: {type: "vec3", value: new THREE.Vector3(0,0,0)},
-            colorB: {type: "vec3", value: new THREE.Vector3(1,1,1)},
-            opacity: {type: "float", value: 0.5},
-            wIntensity: {type: "float", value: 0},
-            wPeriod: {type: "float", value: 20}
+            colorA: { type: "vec3", value: new THREE.Vector3(0, 0, 0) },
+            colorB: { type: "vec3", value: new THREE.Vector3(1, 1, 1) },
+            opacity: { type: "float", value: 1 },
+            wIntensity: { type: "float", value: 0 },
+            wPeriod: { type: "float", value: 20 }
         },
         vertexShader: bgVertexShader(),
         fragmentShader: bgFragmentShader()
     });
-    console.log(lfo.freq);
+    //console.log(lfo.freq);
     bg_quad_mat.transparent = true;
     //bg_quad_mat.castShadow = true;
     bg_quad = new THREE.Mesh(bg_quad_geo, bg_quad_mat);
@@ -154,17 +164,13 @@ function init() {
     colorB_sampler = document.getElementsByClassName('color-b-sample')[0];
     updateColorA();
     updateColorB();
-    //init slider colors
-    document.getElementById("color-b_r-slider").style.background = RGB2HTML(255*lfo.colorB.x,0,0);;
-    document.getElementById("color-b_g-slider").style.background = RGB2HTML(0,255*lfo.colorB.y,0);
-    document.getElementById("color-b_b-slider").style.background = RGB2HTML(0,0,255*lfo.colorB.z);
 
     //set up event listeners
 
-
+    //mouse
     container.addEventListener('resize', onWindowResize, false);
     container.addEventListener('mousedown', onMouseDown, false);
-
+    //keyboard
     document.onkeydown = function (e) {
         //console.log(String.fromCharCode(e.keyCode));
         switch (String.fromCharCode(e.keyCode)) {
@@ -175,10 +181,165 @@ function init() {
                 return;
         }
     };
-    //freq_slider = document.getElementById("freq-slider");
-    //console.log(freq_slider);
-    //freq_slider.addEventListener('input', onFreqSliderChange(freq_slider.value));
-    //freq_slider.onchange = onFreqSliderChange(freq_slider.value);
+
+    // #region initialize sliders
+
+    //assign attributes
+    $("#lfo-frequency").attr({
+        "value": 0,
+        "max": 15,
+        "min": -5,
+        "step": 0.01
+    });
+    //add listener for input change
+    $('#lfo-frequency').on('input', function () {
+        onFreqSliderChange($(this).val());
+    });
+
+    $("#lfo-sharpness").attr({
+        "value": 0,
+        "max": 1,
+        "min": 0,
+        "step": 0.01
+    });
+    //add listener for input change
+    $('#lfo-sharpness').on('input', function () {
+        onSharpnessSliderChange($(this).val());
+    });
+
+    $("#lfo-speed").attr({
+        "value": 1,
+        "max": 30,
+        "min": -30,
+        "step": 0.1
+    });
+    //add listener for input change
+    $('#lfo-speed').on('input', function () {
+        onSpeedSliderChange($(this).val());
+    });
+
+    $("#lfo-origin-x").attr({
+        "value": 0,
+        "max": 1,
+        "min": -1,
+        "step": 0.01
+    });
+    //add listener for input change
+    $('#lfo-origin-x').on('input', function () {
+        onOriginXSliderChange($(this).val());
+    });
+
+    $("#lfo-origin-y").attr({
+        "value": 0,
+        "max": 1,
+        "min": -1,
+        "step": 0.01
+    });
+    //add listener for input change
+    $('#lfo-origin-y').on('input', function () {
+        onOriginYSliderChange($(this).val());
+    });
+
+    $("#color-a-r").attr({
+        "value": 0,
+        "max": 255,
+        "min": 0,
+        "step": 1
+    });
+    //add listener for input change
+    $('#color-a-r').on('input', function () {
+        onColorARedSliderChange($(this).val());
+    });
+
+    $("#color-a-g").attr({
+        "value": 0,
+        "max": 255,
+        "min": 0,
+        "step": 1
+    });
+    //add listener for input change
+    $('#color-a-g').on('input', function () {
+        onColorAGreenSliderChange($(this).val());
+    });
+    
+    $("#color-a-b").attr({
+        "value": 0,
+        "max": 255,
+        "min": 0,
+        "step": 1
+    });
+    //add listener for input change
+    $('#color-a-b').on('input', function () {
+        onColorABlueSliderChange($(this).val());
+    });
+
+    $("#color-b-r").attr({
+        "value": 0,
+        "max": 255,
+        "min": 0,
+        "step": 1
+    }); 
+    //add listener for input change
+    $('#color-b-r').on('input', function () {
+        onColorBRedSliderChange($(this).val());
+    });
+
+    $("#color-b-g").attr({
+        "value": 0,
+        "max": 255,
+        "min": 0,
+        "step": 1
+    });
+    //add listener for input change
+    $('#color-b-g').on('input', function () {
+        onColorBGreenSliderChange($(this).val());
+    });
+    
+    $("#color-b-b").attr({
+        "value": 0,
+        "max": 255,
+        "min": 0,
+        "step": 1
+    });
+    //add listener for input change
+    $('#color-b-b').on('input', function () {
+        onColorBBlueSliderChange($(this).val());
+    });
+    
+    
+    $("#wobble-intensity").attr({
+        "value": 0,
+        "max": 0.125,
+        "min": 0,
+        "step": 0.001
+    });
+    //add listener for input change
+    $('#wobble-intensity').on('input', function () {
+        onWIntensitySliderChange($(this).val());
+    });
+
+    $("#wobble-period").attr({
+        "value": 0,
+        "max": 5,
+        "min": -5,
+        "step": 0.001
+    });
+    //add listener for input change
+    $('#wobble-period').on('input', function () {
+        onWPeriodSliderChange($(this).val());
+    });
+
+    $("#opacity").attr({
+        "value": lfo.opacity,
+        "max": 1,
+        "min": 0,
+        "step": 0.001
+    });
+    //add listener for input change
+    $('#opacity').on('input', function () {
+        onOpacitySliderChange($(this).val());
+    });
+    // #endregion
 }
 
 function animate() {
@@ -195,7 +356,7 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-/* #region Listeners */
+// #region Listeners 
 
 //event listeners
 function onMouseDown(event) {
@@ -287,58 +448,52 @@ function onOriginYSliderChange(value) {
     bg_quad.material.uniforms.origin.value.y = value;
 }
 
-function onColorARedSliderChange(slider) {
-    lfo.colorA.x = slider.value/255;
+function onColorARedSliderChange(value) {
+    lfo.colorA.x = value / 255;
     //console.log(lfo.colorA.x);
-    slider.style.background = RGB2HTML(slider.value,0,0);
     updateColorA();
 }
 
-function onColorAGreenSliderChange(slider) {
-    lfo.colorA.y = slider.value/255;
+function onColorAGreenSliderChange(value) {
+    lfo.colorA.y = value / 255;
     //console.log(lfo.colorA.y);
-    slider.style.background = RGB2HTML(0,slider.value,0);
     updateColorA();
 }
 
-function onColorABlueSliderChange(slider) {
-    lfo.colorA.z = slider.value/255;
+function onColorABlueSliderChange(value) {
+    lfo.colorA.z = value / 255;
     //console.log(lfo.colorA.z);
-    slider.style.background = RGB2HTML(0,0,slider.value);
     updateColorA();
 }
 
 //updates the shader and color preview div
 function updateColorA() {
-    colorA_sampler.style.background = RGB2HTML(lfo.colorA.x*255, lfo.colorA.y*255, lfo.colorA.z*255);
+    colorA_sampler.style.background = RGB2HTML(lfo.colorA.x * 255, lfo.colorA.y * 255, lfo.colorA.z * 255);
     bg_quad.material.uniforms.colorA.value = lfo.colorA;
     //console.log("updateColorA"+vector3ToString(lfo.colorA));
 }
 
-function onColorBRedSliderChange(slider) {
-    lfo.colorB.x = slider.value/255;
+function onColorBRedSliderChange(value) {
+    lfo.colorB.x = value / 255;
     //console.log(lfo.colorB.x);
-    slider.style.background = RGB2HTML(slider.value,0,0);
     updateColorB();
 }
 
-function onColorBGreenSliderChange(slider) {
-    lfo.colorB.y = slider.value/255;
+function onColorBGreenSliderChange(value) {
+    lfo.colorB.y = value / 255;
     //console.log(lfo.colorB.y);
-    slider.style.background = RGB2HTML(0,slider.value,0);
     updateColorB();
 }
 
-function onColorBBlueSliderChange(slider) {
-    lfo.colorB.z = slider.value/255;
+function onColorBBlueSliderChange(value) {
+    lfo.colorB.z = value / 255;
     //console.log(lfo.colorB.z);
-    slider.style.background = RGB2HTML(0,0,slider.value);
     updateColorB();
 }
 
 //updates the shader and color preview div
 function updateColorB() {
-    colorB_sampler.style.background = RGB2HTML(lfo.colorB.x*255, lfo.colorB.y*255, lfo.colorB.z*255);
+    colorB_sampler.style.background = RGB2HTML(lfo.colorB.x * 255, lfo.colorB.y * 255, lfo.colorB.z * 255);
     bg_quad.material.uniforms.colorB.value = lfo.colorB;
     //console.log("updateColorB"+vector3ToString(lfo.colorB));
 }
@@ -361,6 +516,33 @@ function onWPeriodSliderChange(value) {
     bg_quad.material.uniforms.wPeriod.value = value;
 }
 
+//this fn minimizes submenus ie. LFO, colours, etc.
+function onToggleSynthSubMenu(button) {
+    var options_element = button.parentNode.getElementsByClassName("synth-sub-menu-options")[0];
+    var img = button.getElementsByClassName("toggle-synth-sub-menu-image")[0];
+    if (options_element.style.display === "block") {
+        //minimize
+        img.src = "/images/ui/plus.png"
+        options_element.style.display = "none";
+    } else {
+        //maximize
+        img.src = "/images/ui/minimize.png"
+        options_element.style.display = "block";
+    }
+}
+
+
+//this fn minimizes all synth options
+function onMinimizeSynthMenu(button) {
+    console.log("minimize");
+    document.getElementById("synth-menu").style.display = "none";
+}
+
+function onMaximizeSynthMenu(button) {
+    console.log("maximize");
+    document.getElementById("synth-menu").style.display = "block";
+}
+
 function fullScreen() {
     var elem = container;
     if (elem.requestFullscreen) {
@@ -376,9 +558,9 @@ function fullScreen() {
     elem.style.height = '100%';
 }
 
-/* #endregion */
+// #endregion 
 
-/* #region Shaders */
+// #region Shaders 
 
 function bgVertexShader() {
     return `
@@ -443,14 +625,14 @@ function bgFragmentShader() {
     `
 }
 
-/* #endregion */
+// #endregion
 
-/* #region Helper Functions */
+// #region Helper Functions 
 function vector3ToString(v) {
     return "(" + v.x + ", " + v.y + ", " + v.z + ")";
 }
 
-function RGB2HTML(r, g, b){
-    return "rgb("+r+","+g+","+b+")";
+function RGB2HTML(r, g, b) {
+    return "rgb(" + r + "," + g + "," + b + ")";
 }
-/*#endregion*/
+// #endregion

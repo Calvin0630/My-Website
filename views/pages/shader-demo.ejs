@@ -5,67 +5,117 @@
     <%- include ("../partials/header"); %>
 
         <div class='content-container'>
+
             <h1>Visual Synth</h1>
             <h2>This is a digital synth I built that functions in the pixel domain.</h2>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">
+                    Settings
+                </a>
+                <button onclick="fullScreen()" class="fullscreen-button">
+                    <img src="/images/ui/fullscreen.png" class="fullscreen-image">
+                </button>
+                <ul class="navbar-nav mr-auto synth-dropdown">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            LFO
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item">
+                                Frequency
+                                <input id="lfo-frequency" type="range" />
+                            </a>
+                            <a class="dropdown-item">
+                                Sharpness
+                                <input id="lfo-sharpness" type="range" />
+                            </a>
+                            <a class="dropdown-item">
+                                Speed
+                                <input id="lfo-speed" type="range" />
+                            </a>
+                            <a class="dropdown-item">
+                                Origin X
+                                <input id="lfo-origin-x" type="range" />
+                            </a>
+                            <a class="dropdown-item">
+                                Origin Y
+                                <input id="lfo-origin-y" type="range" />
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Colour
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">
+                                Colour A
+                                <div class="color-a-sample color-sample">&#8203; </div>
+                                <a class="dropdown-item">
+                                    R
+                                    <input id="color-a-r" type="range" />
+                                </a>
+                                <a class="dropdown-item">
+                                    G
+                                    <input id="color-a-g" type="range" />
+                                </a>
+                                <a class="dropdown-item">
+                                    B
+                                    <input id="color-a-b" type="range" />
+                                </a>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">
+                                Colour B
+                                <div class="color-b-sample color-sample">&#8203; </div>
+                                <a class="dropdown-item">
+                                    R
+                                    <input id="color-b-r" type="range" />
+                                </a>
+                                <a class="dropdown-item">
+                                    G
+                                    <input id="color-b-g" type="range" />
+                                </a>
+                                <a class="dropdown-item">
+                                    B
+                                    <input id="color-b-b" type="range" />
+                                </a>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item">
+                                Opacity
+                                <input id="opacity" type="range" />
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Wobble
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item">
+                                Wobble Intensity
+                                <input id="wobble-intensity" type="range" />
+                            </a>
+                            <a class="dropdown-item">
+                                Wobble Period
+                                <input id="wobble-period" type="range" />
+                            </a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
             <div class="synth-container">
+
                 <canvas class="webgl" id="webgl"></canvas>
-                <div class="synth-table">
-                    <button onclick="fullScreen()" class="fullscreen-button">Fullscreen</button>
-                    <h1>LFO</h1>
-
-                    <h3>Frequency</h3>
-                    <input type="range" min="-5" max="15" step="0.01" value="0" class="slider" id="freq-slider"
-                        oninput="onFreqSliderChange(this.value)">
-                    <h3>Sharpness</h3>
-                    <input type="range" min="0" max="1" step="0.01" value="0" class="slider" id="freq-slider"
-                        oninput="onSharpnessSliderChange(this.value)">
-                    <h3>Speed</h3>
-                    <input type="range" min="-30" max="30" step="0.01" value="1" class="slider"
-                        oninput="onSpeedSliderChange(this.value)">
-                    <h3>Origin X</h3>
-                    <input type="range" min="-1" max="1" step="0.01" value="0" class="slider"
-                        oninput="onOriginXSliderChange(this.value)">
-                    <h3>Origin Y</h3>
-                    <input type="range" min="-1" max="1" step="0.01" value="0" class="slider"
-                        oninput="onOriginYSliderChange(this.value)">
-                    <h3> Colour A</h3>
-                    <div class="color-a-sample">&#8203; </div>
-                    <h4>R</h4>
-                    <input type="range" min="0" max="255" step="1" value="0" class="slider"
-                        oninput="onColorARedSliderChange(this)">
-                    <h4>G</h4>
-                    <input type="range" min="0" max="255" step="1" value="0" class="slider"
-                        oninput="onColorAGreenSliderChange(this)">
-                    <h4>B</h4>
-                    <input type="range" min="0" max="255" step="1" value="0" class="slider"
-                        oninput="onColorABlueSliderChange(this)">
-                    <h3> Colour B</h3>
-                    <div class="color-b-sample">&#8203; </div>
-                    <h4>R</h4>
-                    <input type="range" min="0" max="255" step="1" value="255" class="slider" id="color-b_r-slider"
-                        oninput="onColorBRedSliderChange(this)">
-                    <h4>G</h4>
-                    <input type="range" min="0" max="255" step="1" value="255" class="slider" id="color-b_g-slider"
-                        oninput="onColorBGreenSliderChange(this)">
-                    <h4>B</h4>
-                    <input type="range" min="0" max="255" step="1" value="255" class="slider" id="color-b_b-slider"
-                        oninput="onColorBBlueSliderChange(this)">
-                    <h3>Opacity</h3>
-                    <input type="range" min="0" max="1" step="0.001" value="0.5" class="slider"
-                        oninput="onOpacitySliderChange(this.value)">
-                    <h3>Wobble Intensity</h3>
-                    <input type="range" min="0" max="0.125" step="0.001" value="0" class="slider"
-                        oninput="onWIntensitySliderChange(this.value)">
-                    <h3>Wobble Period</h3>
-                    <input type="range" min="-10" max="10" step="0.001" value="20" class="slider"
-                        oninput="onWPeriodSliderChange(this.value)">
-
-
-                </div>
-
+                
                 <script src="/js/webgl/three.js"></script>
                 <!--a helper for mouse input in three.js-->
-                <script src="/js/webgl/main.js"></script>
+                <script src="/js/webgl/visual_synth.js"></script>
             </div>
 
 

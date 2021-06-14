@@ -25,6 +25,7 @@ body {
 .header a.active {
     background-color: rgb(142, 59, 70);
     color: white;
+    text-decoration: none;
 }
 
 /* Links on mouse-over */
@@ -32,6 +33,7 @@ body {
 .header a:hover:not(.active) {
     background-color: #555;
     color: white;
+    text-decoration: none;
 }
 
 .header a[select] {
@@ -50,12 +52,6 @@ h3 {
     color: rgb(50, 0, 2);
 }
 
-.right-panel {
-    position: absolute;
-    /*SHOULD BE THE SAME AS SIDEBAR WIDTH*/
-    right: 0%;
-    left: 20%;
-}
 
 .content-container {
     background-color: rgb(71, 71, 71);
@@ -67,7 +63,8 @@ h3 {
     padding-right: 2%;
     right: 0%;
     left: 0%;
-    position: absolute;
+    width:100%;
+    position: relative;
 }
 
 .content-container h1 {
@@ -123,13 +120,11 @@ video {
 }
 
 .footer {
-    position: fixed;
+    position: relative;
     left: 0;
-    bottom: 0;
-    left: 0;
-    bottom: 0;
+    bottom: 0%;
     width: 100%;
-    background-color: rgb(255, 156, 227);
+    background-color: rgb(226, 141, 202);
     color: black;
     text-align: center;
 }
@@ -204,13 +199,18 @@ video {
     display: inline-block;
 }
 
-.synth-container {
-    position: relative;
-}
+
 
 .webgl {
     align-self: center;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
     margin: none;
+}
+
+input{
+    color: red;
+}
+
+.fullscreen-image {
+    height: 6vh;
 }
