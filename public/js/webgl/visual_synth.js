@@ -79,7 +79,7 @@ var colorB_sampler;
 
 
 jQuery(function () {
-    alert("EPILEPSY WRNING\n\nThis tool can create flashing images that may trigger a seizure in someone with photosensitive epilepsy.\n\nStay safe friends (and enemies)!");
+    alert("EPILEPSY WRNING\n\nThis tool can create flashing lights that may trigger a seizure in someone with photosensitive epilepsy.\n\nStay safe friends!");
     init();
     animate();
 });
@@ -186,7 +186,7 @@ function init() {
 
     //assign attributes
     $("#lfo-frequency").attr({
-        "value": 0,
+        "value": lfo.freq,
         "max": 15,
         "min": -5,
         "step": 0.01
@@ -197,7 +197,7 @@ function init() {
     });
 
     $("#lfo-sharpness").attr({
-        "value": 0,
+        "value": lfo.sharpness,
         "max": 1,
         "min": 0,
         "step": 0.01
@@ -208,7 +208,7 @@ function init() {
     });
 
     $("#lfo-speed").attr({
-        "value": 1,
+        "value": lfo.speed,
         "max": 30,
         "min": -30,
         "step": 0.1
@@ -219,7 +219,7 @@ function init() {
     });
 
     $("#lfo-origin-x").attr({
-        "value": 0,
+        "value": lfo.origin.x,
         "max": 1,
         "min": -1,
         "step": 0.01
@@ -230,7 +230,7 @@ function init() {
     });
 
     $("#lfo-origin-y").attr({
-        "value": 0,
+        "value": lfo.origin.y,
         "max": 1,
         "min": -1,
         "step": 0.01
@@ -241,7 +241,7 @@ function init() {
     });
 
     $("#color-a-r").attr({
-        "value": 0,
+        "value": lfo.colorA.x*255,
         "max": 255,
         "min": 0,
         "step": 1
@@ -252,7 +252,7 @@ function init() {
     });
 
     $("#color-a-g").attr({
-        "value": 0,
+        "value": lfo.colorA.y*255,
         "max": 255,
         "min": 0,
         "step": 1
@@ -263,7 +263,7 @@ function init() {
     });
     
     $("#color-a-b").attr({
-        "value": 0,
+        "value": lfo.colorA.z*255,
         "max": 255,
         "min": 0,
         "step": 1
@@ -272,9 +272,9 @@ function init() {
     $('#color-a-b').on('input', function () {
         onColorABlueSliderChange($(this).val());
     });
-
+    console.log("lfo.colorB.x: "+lfo.colorB.x)
     $("#color-b-r").attr({
-        "value": 0,
+        "value": lfo.colorB.x*255,
         "max": 255,
         "min": 0,
         "step": 1

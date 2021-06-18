@@ -2,12 +2,6 @@ var fs = require("fs");
 var mm = require('music-metadata');
 var util = require('util');
 module.exports = {
-    foo: function () {
-        // whatever
-    },
-    bar: function () {
-        // whatever
-    },
     bookList: [],
     readAudiobookFiles: async function () {
         //console.log("readAudiobookFiles();");
@@ -16,7 +10,6 @@ module.exports = {
         } catch (e) {
             console.log(e);
         }
-        //var bookList = [];
         for (f in folders) {
             //ignore the index file
             if (folders[f] == "index.json") continue;
@@ -41,16 +34,29 @@ module.exports = {
                 }
             }
             chapterNames = chapterNamesFiltered;
-            for (i in chapterNames) {
-                try {
-                    var metadata = await mm.parseFile(__dirname + "/public/audiobooks/" + folders[f] + "/" +chapterNames[i]);
-                    //console.log(util.inspect(metadata, { showHidden: false, depth: null }));
-                    //console.log("codec: "+metadata.format.codec);
-                    //console.log("track#??  "+metadata.native.ID3v1[2].value);
-                } catch (error) {
-                    console.error(error.message);
+            //check if there are multiple chapters (some books have just one audio file)
+            //
+            trackIndices = [];
+            if (chapterNames.length > 1) {
+                console.log(folders[f]);
+                //a list of track numbers that corresponds element-wise to eachj chapter
+                trackIndices = [];
+                //go through each chapter and read metadata to get track #
+                for (i in chapterNames) {
+                    try {
+                        var metadata = await mm.parseFile(__dirname + "/public/audiobooks/" + folders[f] + "/" + chapterNames[i]);
+                        //console.log(util.inspect(metadata, { showHidden: false, depth: null }));
+                        //console.log("\t" + chapterNames[i]);
+                        //console.log("\ttrack#:  " + metadata.common.track.no);
+                        trackIndices.push(metadata.common.track.no);
+                    } catch (error) {
+                        console.error(error.message);
+                    }
                 }
+                console.log(trackIndices.join());
+                chapterNames = sortChapters(chapterNames, trackIndices);
             }
+
 
             //console.log("info: "+info[0]+", "+info[1]);
             //console.log("folders[f]: "+folders[f]);
@@ -72,4 +78,22 @@ function Book(title, author, location, chapters) {
     this.location = location;
     //(list of strings) a list of the chapters or sections of a book within their folder. 
     this.chapters = chapters;
+}
+
+//this function takes two arrays, an array of track #s and an array of chapter names that correspond element-wise.
+//this functionb sorts both arrays based on 
+function sortChapters(chapterNames, trackIndices) {
+    var result = [];
+    var cList = [];
+    //create a list of objects that contain the chapter name and track #
+    for (i in chapterNames) {
+        cList.push({chapter: chapterNames[i], track: trackIndices[i]});
+    }
+    //sort it
+    cList.sort((a, b) => (a.track > b.track) ? 1 : -1);
+    //create a new list of just the sorted chapter names
+    for (i in cList) {
+        result.push(cList[i].chapter);
+    }
+    return result;
 }
