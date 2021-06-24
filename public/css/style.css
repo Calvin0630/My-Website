@@ -212,5 +212,13 @@ input{
 }
 
 .fullscreen-image {
-    height: 6vh;
+    height: 4vh;
+}
+
+.card h2{
+    color:black;
+}
+
+.card h3{
+    color:black;
 }

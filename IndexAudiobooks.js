@@ -38,7 +38,7 @@ module.exports = {
             //
             trackIndices = [];
             if (chapterNames.length > 1) {
-                console.log(folders[f]);
+                //console.log(folders[f]);
                 //a list of track numbers that corresponds element-wise to eachj chapter
                 trackIndices = [];
                 //go through each chapter and read metadata to get track #
@@ -53,7 +53,7 @@ module.exports = {
                         console.error(error.message);
                     }
                 }
-                console.log(trackIndices.join());
+                //console.log(trackIndices.join());
                 chapterNames = sortChapters(chapterNames, trackIndices);
             }
 
