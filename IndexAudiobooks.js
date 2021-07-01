@@ -14,54 +14,50 @@ module.exports = {
             //ignore the index file
             if (folders[f] == "index.json") continue;
             info = folders[f].split(" - ");
-            //read the contents of the folder into a list of filenames called chapters
+            //read the contents of the folder into a list of filenames called fileNames
+            var fileNames;
             try {
-                var chapterNames = fs.readdirSync(__dirname + '/public/audiobooks/' + folders[f] + "/");
+                fileNames = fs.readdirSync(__dirname + '/public/audiobooks/' + folders[f] + "/");
             } catch (e) {
                 console.log(e);
             }
+
             //filter out non mp3 files
             //a regex to match extensions
+
             var extRegex = /\.([0-9a-z]+)(?=[?#])|(\.)(?:[\w]+)$/gmi;
-            //a version of chapterNames only containing mp3 files
-            chapterNamesFiltered = [];
-            for (i in chapterNames) {
-                var extension = chapterNames[i].match(extRegex);
+            var chapters = [];
+            for (i in fileNames) {
+                var extension = fileNames[i].match(extRegex);
                 //if the file type is mp3
                 if (extension == ".mp3") {
-                    //add it to the filtered list
-                    chapterNamesFiltered.push(chapterNames[i]);
-                }
-            }
-            chapterNames = chapterNamesFiltered;
-            //check if there are multiple chapters (some books have just one audio file)
-            //
-            trackIndices = [];
-            if (chapterNames.length > 1) {
-                //console.log(folders[f]);
-                //a list of track numbers that corresponds element-wise to eachj chapter
-                trackIndices = [];
-                //go through each chapter and read metadata to get track #
-                for (i in chapterNames) {
+                    //read chapter metadata into an object and put it in the chapter list
+                    //console.log("i: " + i);
+                    //console.log("fileNames[i]: " + fileNames[i]);
                     try {
-                        var metadata = await mm.parseFile(__dirname + "/public/audiobooks/" + folders[f] + "/" + chapterNames[i]);
+                        var metadata = await mm.parseFile(__dirname + "/public/audiobooks/" + folders[f] + "/" + fileNames[i]);
                         //console.log(util.inspect(metadata, { showHidden: false, depth: null }));
                         //console.log("\t" + chapterNames[i]);
                         //console.log("\ttrack#:  " + metadata.common.track.no);
-                        trackIndices.push(metadata.common.track.no);
+                        //console.log("\ttitle:  " + metadata.common.title);
+                        var trackNum = metadata.common.track.no;
+                        var title = metadata.common.title;
+                        chapters.push(new Chapter(fileNames[i], title, trackNum));
                     } catch (error) {
                         console.error(error.message);
                     }
                 }
-                //console.log(trackIndices.join());
-                chapterNames = sortChapters(chapterNames, trackIndices);
             }
 
+            //sort the chapters by track num
+            chapters.sort(function(a,b) {
+                return a.trackNum-b.trackNum;
+            });
 
             //console.log("info: "+info[0]+", "+info[1]);
             //console.log("folders[f]: "+folders[f]);
             //console.log("chapters: "+chapters);
-            var book = new Book(info[0], info[1], folders[f], chapterNames);
+            var book = new Book(info[0], info[1], folders[f], chapters);
             //console.log(book);
             this.bookList.push(book);
         }
@@ -80,6 +76,12 @@ function Book(title, author, location, chapters) {
     this.chapters = chapters;
 }
 
+function Chapter(fileName, title, trackNum) {
+    this.fileName = fileName;
+    this.title = title;
+    this.trackNum = trackNum;
+}
+
 //this function takes two arrays, an array of track #s and an array of chapter names that correspond element-wise.
 //this functionb sorts both arrays based on 
 function sortChapters(chapterNames, trackIndices) {
@@ -87,7 +89,7 @@ function sortChapters(chapterNames, trackIndices) {
     var cList = [];
     //create a list of objects that contain the chapter name and track #
     for (i in chapterNames) {
-        cList.push({chapter: chapterNames[i], track: trackIndices[i]});
+        cList.push({ chapter: chapterNames[i], track: trackIndices[i] });
     }
     //sort it
     cList.sort((a, b) => (a.track > b.track) ? 1 : -1);

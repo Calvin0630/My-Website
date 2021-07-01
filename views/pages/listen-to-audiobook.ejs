@@ -6,8 +6,6 @@
             <% bookList.forEach(function(book) { %>
                 <% if(book.location==location){ %>
                     <div class="card">
-                        <img class="card-img-top" src="<%= '/audiobooks/' + book.location + '/cover.jpg'%>"
-                            alt="Sorry no cover image here :(">
                         <div class="card-body">
                             <h2 class="card-title">
                                 <%= book.title %>
@@ -18,71 +16,28 @@
                             </h3>
                             <a href="#" class="btn btn-primary">Download (eventually)</a>
                             <ul class="list-group list-group-flush">
-                                <% if (book.chapters.length==1) {%>
-                                    <!--There is only one chapter-->
+
+                                <% book.chapters.forEach(function(chapter, i) { %>
                                     <li class="list-group-item">
-                                        <%chapterSource=" /audiobooks/" +location+"/"+book.chapters[0] %>
+                                        <h2>
+                                            <% if (chapter.title==null ){%>
+                                                <%= chapter.fileName %>
+                                                    <% } else {%>
+                                                        <%= chapter.title %>
+                                                            <% } %>
+
+                                        </h2>
+                                        <%chapterSource=" /audiobooks/" +location+"/"+chapter.fileName %>
                                             <audio controls>
                                                 <source src="<%= chapterSource %>" type="audio/mpeg">
                                                 Your browser does not support the audio element.
                                             </audio>
-                                        </li>
-                                    <% } else { %>
-                                        <!--There is more than one chapter.-->
-                                        <% book.chapters.forEach(function(chapter, i) { %>
-                                            <li class="list-group-item">
-                                                <h2>
-                                                    <%= chapter.substring(0, (chapter.length-4)) %>
-                                                </h2>
-                                                <%chapterSource=" /audiobooks/" +location+"/"+chapter %>
-                                                    <audio controls>
-                                                        <source src="<%= chapterSource %>" type="audio/mpeg">
-                                                        Your browser does not support the audio element.
-                                                    </audio>
-                                                </li>
-                                            <% }); %>
-                                                <% } %>
+                                    </li>
+                                    <% }); %>
                             </ul>
                         </div>
                     </div>
-                    <div class="chapter-list-container">
-                        <a href="/audiobooks">
-                            <img src="/images/ui/back.png" class="back-button">
-                        </a>
-                        <br>
-                        <h1>
-                            <%= book.title %>
-                        </h1>
-                        <h3>by</h3>
-                        <h2>
-                            <%= book.author %>
-                        </h2>
-                        <% if (book.chapters.length==1) {%>
-                            <!--There is only one chapter-->
-                            <div class="chapter-container">
-                                <%chapterSource=" /audiobooks/" +location+"/"+book.chapters[0] %>
-                                    <audio controls>
-                                        <source src="<%= chapterSource %>" type="audio/mpeg">
-                                        Your browser does not support the audio element.
-                                    </audio>
-                            </div>
-                            <% } else { %>
-                                <!--There is more than one chapter.-->
-                                <% book.chapters.forEach(function(chapter, i) { %>
-                                    <div class="chapter-container">
-                                        <h2>
-                                            <%= chapter.substring(0, (chapter.length-4)) %>
-                                        </h2>
-                                        <%chapterSource=" /audiobooks/" +location+"/"+chapter %>
-                                            <audio controls>
-                                                <source src="<%= chapterSource %>" type="audio/mpeg">
-                                                Your browser does not support the audio element.
-                                            </audio>
-                                    </div>
-                                    <% }); %>
-                                        <% } %>
 
-                    </div>
                     <% } %>
                         <% }); %>
         </div>
