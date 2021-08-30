@@ -54,7 +54,8 @@ h3 {
 
 
 .content-container {
-    background-color: rgb(71, 71, 71);
+    background-color: rgb(70, 7, 7);
+    color: rgb(255, 183, 183);
     text-align: center;
     align-items: center;
     padding-top: 2%;
@@ -162,6 +163,8 @@ video {
     border-color: rgb(116, 0, 0);
 }
 
+
+
 .chapter-list-container {
     background-color: rgb(199, 95, 95);
     padding: 5%;
@@ -213,6 +216,11 @@ input{
 
 .fullscreen-image {
     height: 4vh;
+}
+
+.card {
+    color: black;
+    width: 18rem;
 }
 
 .card h2{

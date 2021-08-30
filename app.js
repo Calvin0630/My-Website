@@ -36,7 +36,10 @@ app.get('/listen-to-audiobook', function (req, res) {
 app.get('/shader-demo', function (req, res) {
     res.render('pages/shader-demo');
 });
-
+// mycology
+app.get('/mycology', function (req, res) {
+    res.render('pages/mycology');
+});
 
 app.listen(app.get("port"), function () {
     console.log("server started on port: " + app.get("port"));

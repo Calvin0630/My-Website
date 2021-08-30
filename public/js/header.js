@@ -18,6 +18,7 @@ switch (page) {
     case "audiobooks":
         activeButton = 1;
         //console.log("audiobooks!");
+        break;
     case "listen-to-audiobook":
         activeButton = 1;
         //console.log("listen-to-audiobook!");
@@ -26,16 +27,20 @@ switch (page) {
         activeButton = 2;
         //console.log("shader-demo!");
         break;
+    case "mycology":
+        activeButton = 3;
+        //console.log("mycology!");
+        break;
 
     default:
-        //console.log("default");
+    //console.log("default");
 
 }
 //console.log("activeButton: " + activeButton);
 setButtonColor(activeButton);
 
 for (i = 0; i < buttons.length; i++) {
-    ////console.log(buttons[i].textContent);
+    //console.log(buttons[i].textContent);
 }
 
 /*Sets the color of the given button by index, j (0=top)*/

@@ -4,18 +4,32 @@
     <%- include ("../partials/header"); %>
         <div class="content-container">
 
-            
+
 
             <div class="audiobook-container">
-                <% bookList.forEach(function(book) { %>
-                    <a class="select-audiobook" href="/listen-to-audiobook?book-loc=<%= book.location %>">
-                        <%= book.location %>
-                    </a>
-                    <br>
-                    <% }); %>
-
-
+                <div class="card-columns">
+                    <% bookList.forEach(function(book) { %>
+                        <div class="card">
+                            <img class="card-img-top" src="/audiobooks/<%= book.location %>/cover.jpg"
+                                alt="Card image cap">
+                            <div class="card-body">
+                                <h3 class="card-text">
+                                    <%= book.title %>
+                                </h3>
+                                <h5 class="card-text">by</h5>
+                                <h4 class="card-text">
+                                    <%= book.author %>
+                                </h4>
+                                <a href="/listen-to-audiobook?book-loc=<%= book.location %>" class="btn btn-dark"
+                                    role="button">Listen!</a>
+                            </div>
+                        </div>
+                        <% }); %>
+                </div>
             </div>
+
+
+        </div>
         </div>
 
         <%- include ("../partials/footer"); %>
