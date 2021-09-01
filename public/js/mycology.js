@@ -1,4 +1,5 @@
 var mycoData;
+var selectionParameters = {};
 ReadMushroomJSON();
 jQuery(function () {
     $("#mushroom_list_box").text("hello");
@@ -11,6 +12,7 @@ jQuery(function () {
         console.log("mycoData[0].sporePrintColor: " + mycoData[0].sporePrintColor);
         console.log("mycoData[0].ecologicalType: " + mycoData[0].ecologicalType);
         console.log("mycoData[0].howEdible: " + mycoData[0].howEdible);
+        $("#mushroom_list_box").text("uwu");
     });
 });
 
@@ -25,5 +27,5 @@ function ReadMushroomJSON() {
         mycoData = data;
     });
 
-    $("#mushroom_list_box").text = "uwu";
+    
 }

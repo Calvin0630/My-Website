@@ -5,38 +5,50 @@
         <div class="content-container">
             <% bookList.forEach(function(book) { %>
                 <% if(book.location==location){ %>
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">
-                                <%= book.title %>
-                            </h2>
-                            <h4 class="card-text">by</h4>
-                            <h3 class="card-text">
-                                <%= book.author %>
-                            </h3>
-                            <a href="#" class="btn btn-primary">Download (eventually)</a>
-                            <ul class="list-group list-group-flush">
-
-                                <% book.chapters.forEach(function(chapter, i) { %>
-                                    <li class="list-group-item">
-                                        <h2>
-                                            <% if (chapter.title==null ){%>
-                                                <%= chapter.fileName %>
-                                                    <% } else {%>
-                                                        <%= chapter.title %>
-                                                            <% } %>
-
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">
+                                            <%= book.title %>
                                         </h2>
-                                        <%chapterSource=" /audiobooks/" +location+"/"+chapter.fileName %>
-                                            <audio controls>
-                                                <source src="<%= chapterSource %>" type="audio/mpeg">
-                                                Your browser does not support the audio element.
-                                            </audio>
-                                    </li>
-                                    <% }); %>
-                            </ul>
+                                        <h4 class="card-text">by</h4>
+                                        <h3 class="card-text">
+                                            <%= book.author %>
+                                        </h3>
+                                        <button type="button" class="btn btn-secondary">Download (eventually)</button>
+                                        <ul class="list-group list-group-flush">
+            
+                                            <% book.chapters.forEach(function(chapter, i) { %>
+                                                <li class="list-group-item">
+                                                    <h2>
+                                                        <% if (chapter.title==null ){%>
+                                                            <%= chapter.fileName %>
+                                                                <% } else {%>
+                                                                    <%= chapter.title %>
+                                                                        <% } %>
+            
+                                                    </h2>
+                                                    <%chapterSource=" /audiobooks/" +location+"/"+chapter.fileName %>
+                                                        <audio controls>
+                                                            <source src="<%= chapterSource %>" type="audio/mpeg">
+                                                            Your browser does not support the audio element.
+                                                        </audio>
+                                                </li>
+                                                <% }); %>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <img class="card-img-top" src="/audiobooks/<%= book.location %>/cover.jpg"
+                                alt="cover for <%= book.title %>">
+                            </div>
                         </div>
                     </div>
+
+                    
 
                     <% } %>
                         <% }); %>
