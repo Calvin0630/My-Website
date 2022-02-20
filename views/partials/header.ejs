@@ -1,8 +1,39 @@
 <div>
-<div class="header" role="navigation">
-    <a href="/" class="header-button" onclick="setActiveButtonIndex(0)">Home</a>
-    <a href="/audiobooks" class="header-button" onclick="setActiveButtonIndex(1)">Audiobooks</a>
-    <a href="/shader-demo" class="header-button" onclick="setActiveButtonIndex(2)">Visual Synth</a>
-    <a href="/mycology" class="header-button" onclick="setActiveButtonIndex(3)">Mycology</a>
-    <script src="/js/header.js"></script>
-</div>
+    <div class="header" role="navigation">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm" style="margin:2%">
+                    <a href="/" class="btn btn-outline-dark">Home</a>
+                </div>
+                <div class="col-sm" style="margin:2%">
+                    <a href="/audiobooks" class="btn btn-outline-dark"
+                >Audiobooks</a>
+                </div>
+                <div class="col-sm" style="margin:2%">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Interactive Projects
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="/oscillator">Oscillator</a>
+                            <a class="dropdown-item" href="/planets">Planets</a>
+                        </div>
+                    </div>
+        
+                    
+                </div>
+                <div class="col-sm" style="margin:2%">
+                    <a href="/mycology" class="btn btn-outline-dark">Mycology</a>
+            
+                </div>
+            </div>
+
+            
+            
+
+            
+            
+
+        </div>

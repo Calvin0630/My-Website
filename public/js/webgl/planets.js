@@ -6,7 +6,7 @@ var container_height;
 var container_width;
 //used in mouse events
 var container_rect;
-var frames_per_second = 3;
+var frames_per_second = 30;
 //a list of objects in the scene
 var scene_objects = [];
 //a list of velocioties (THREE.Vector3) coresponding to the objectss in scene_objects
@@ -51,7 +51,7 @@ function init() {
     });
     sun = new THREE.Mesh(sun_geo, sun_mat);
     sun.position.set(0, 0, 0);
-    //scene.add(sun);
+    scene.add(sun);
     //sun.position.z=-10;
     camera.position.z = 5;
 
@@ -165,6 +165,18 @@ function animate() {
 }
 
 function physics() {
+    //update position based on velocity
+    for (var i = 0; i < scene_objects.length; i++) {
+        console.log(i)
+        console.log("\tp.velocity: "+vector3ToString(scene_objects[i].velocity))
+        console.log("\tp.pos: "+vector3ToString(scene_objects[i].position))
+        var deltaMoveSpeed = 0.02;
+        var deltaMove = scene_objects[i].velocity.clone().multiplyScalar(deltaMoveSpeed);
+        var newPos = scene_objects[i].position.clone().add(deltaMove);
+        scene_objects[i].position.set(newPos.x, newPos.y, newPos.z);
+            
+
+    }
     //calculate the force on each object in scene_objects
     var g_forces = calculateGForces();
     //apply the acceleration to each object velocity
@@ -185,6 +197,7 @@ function calculateGForces() {
             //var i_to_j = scene_objects[j].position.sub(scene_objects[i].position);
             //multiply by gravitational constant (fG = g*m1*m2/(r^2))
             //calculate mass based on scale
+            var grav_constant = 1
             var m1 = scene_objects[i].scale.length();
             var m2 = scene_objects[j].scale.length();
             var fG = grav_constant * m1 * m2 / (i_to_j.length() ^ 2);
@@ -267,7 +280,8 @@ function createPlanet(position, scale, color_a, color_b) {
     planet.scale.set(scale.x,
         scale.y,
         scale.z);
-    //planet.velocity = new THREE.Vector3(0,0,0);
+    //set a random initial velocity
+    planet.velocity = new THREE.Vector3().random().multiplyScalar(2).add(new THREE.Vector3(-1,-1,-1));
     scene.add(planet);
     scene_objects.push(planet);
     scene_object_velocities.push(new THREE.Vector3(0, 0, 0));

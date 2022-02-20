@@ -32,9 +32,13 @@ app.get('/listen-to-audiobook', function (req, res) {
         bookList: indexAudiobook.bookList
     });
 });
-// shader demo
-app.get('/shader-demo', function (req, res) {
-    res.render('pages/shader-demo');
+// oscillator
+app.get('/oscillator', function (req, res) {
+    res.render('pages/oscillator');
+});
+// planets
+app.get('/planets', function (req, res) {
+    res.render('pages/planets');
 });
 // mycology
 app.get('/mycology', function (req, res) {
